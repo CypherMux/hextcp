@@ -104,5 +104,5 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 ## Disclaimer
 
-This tool is intended for educational purposes, CTFs, and authorized penetration testing. Always ensure you have explicit permission to enumerate systems you do not own.
+*This tool is intended for educational purposes, CTFs, and authorized penetration testing. Always ensure you have explicit permission to enumerate systems you do not own.*
 
