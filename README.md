@@ -28,7 +28,7 @@ I built this tool because manually doing the hex-to-decimal math and reversing b
 
 The tool uses pure Bash to translate the kernel's data:
 
-*  **1. Extracting Data:** It reads the TCP file line by line, skipping the header, and isolates the Local Address,State, and Inode columns.
+*  **1. Extracting Data:** It reads the TCP file line by line, skipping the header, and isolates the Local Address, State, and Inode columns.
 
 *  **2.Port Conversion:** Bash natively converts hex to decimal using arithmetic expansion: `$((16#$port_hex))`.
 
@@ -74,7 +74,7 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 * `-o <filename>`: Save the decoded output to a specified text file.
 
-* `-a`: Show **ALL** states *(TIME_WAIT,CLOSE_WAIT,SYN_SENT,etc.)* instead of just LISTEN and ESTABLISHED.
+* `-a`: Show **ALL** states *(TIME_WAIT, CLOSE_WAIT, SYN_SENT, etc.)* instead of just LISTEN and ESTABLISHED.
 
 * `-6`: Parse the IPv6 table *(/proc/net/tcp6)* instead of IPv4.
 
