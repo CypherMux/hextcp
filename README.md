@@ -42,7 +42,67 @@ The tool uses pure Bash to translate the kernel's data:
 
 ### Option 1: Run Locally (Without Installing)
 
-*  **1. Clone The Repo:**
+*  **1. Clone the repo:**
 
 ```git clone https://github.com/CypherMux/hextcp.git | cd hextcp```
+
+*  **2. Make the script executable:**
+
+```chmod +x hextcp.sh```
+
+*  **3. Run the script:**
+
+```./hextcp.sh```
+
+### Option 2: Install The Tool Globally (Recommended)
+
+If you want to run `hextcp` from any directory without using `./`, you can install it to your system's binary path:
+
+*  **1.Make the script executable:**
+
+```chmod +x hextcp.sh```
+
+*  **2. Move it to `/usr/local/bin` and rename it:**
+
+```sudo mv hextcp.sh /usr/local/bin/hextcp```
+
+*  **3. Run it from anywhere via:**
+
+```hextcp```
+
+## Command Line Options
+
+* `-o <filename>`: Save the decoded output to a specified text file.
+
+* `-a`: Show **ALL** states *(TIME_WAIT,CLOSE_WAIT,SYN_SENT,etc.)* instead of just LISTEN and ESTABLISHED.
+
+* `-6`: Parse the IPv6 table *(/proc/net/tcp6)* instead of IPv4.
+
+* `-p`: Show Process/PID. Maps the socket to the application running it. *(Requires `sudo`)*
+
+* `-c`: Count only. Outputs the total number of matching sockets instead of the full table.
+
+* `-h`: Display the help menu.
+
+## Examples of Some Commands
+
+*  **Prints only listening/established IPv4 ports *(default)*:
+
+```hextcp```
+
+*  **Replicate `netstat -tulpn` *(show all processes and ports)*:
+
+```sudo hextcp -a -p```
+
+*  **Save all IPv6 connections to a file:**
+
+```hextcp -6 -a -o <file_name>```
+
+* **Count the number of listening ports:**
+
+```hextcp -c```
+
+## Disclaimer
+
+This tool is intended for educational purposes, CTFs, and authorized penetration testing. Always ensure you have explicit permission to enumerate systems you do not own.
 
