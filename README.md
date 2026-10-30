@@ -44,7 +44,7 @@ The tool uses pure Bash to translate the kernel's data:
 
 *  **1. Clone the repo:**
 
-```git clone https://github.com/CypherMux/hextcp.git | cd hextcp```
+```git clone https://github.com/CypherMux/hextcp.git && cd hextcp```
 
 *  **2. Make the script executable:**
 
