@@ -46,7 +46,7 @@ if [ "$COUNT_ONLY" = false ]; then
   for ((i = 0; i <= 100; i += 2)); do
     filled=$((i * 40 / 100))
     empty=$((40 - filled))
-    printf "\rParsing $TCP_FILE ["
+    printf "\r[hextcp by Stlwtrs] Parsing $TCP_FILE ["
     printf "%0.s#" $(seq 1 $filled)
     printf "%0.s-" $(seq 1 $empty)
     printf "] %d%%" "$i"
