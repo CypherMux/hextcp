@@ -25,7 +25,7 @@ I built this tool because manually doing the hex-to-decimal math and reversing b
 
 *  **Heuristic Parsing:** The tool automatically filters for `0A` (LISTEN) and `01` (ESTABLISHED) states, and outright ignores dead connections in order to clean up the output and only show the important info.
 
-*  **Visual Feedback:** It includes a custom terminal loading bar using `tput` and `printf` for that *hacker* aesthetic. 🤯
+*  **Visual Feedback:** It includes a custom terminal loading bar using `tput` and `printf` functionality.
 
 *  **File Output:** You can save your results directly to a file of your choice using the `-o` flag.
 
