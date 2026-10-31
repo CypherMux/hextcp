@@ -70,12 +70,11 @@ if [ "$COUNT_ONLY" = false ]; then
     > "$OUTPUT_FILE"
   fi
 
-  # Set up temporary file for counting the lines
-  TEMP_COUNT="/tmp/hextcp_count_$$"
-  > "$TEMP_COUNT"
 
   # Main logic loop
-tail -n +2 "$TCP_FILE" | while read -r line; do
+COUNT=0
+
+while read -r line; do
 
   # Read columns and turn into variables
   local_address=$(echo "$line" | awk '{print $2}')
@@ -150,16 +149,14 @@ tail -n +2 "$TCP_FILE" | while read -r line; do
                     fi
 
                     # Write to a temporary file for counting
-                    echo "count" >> "$TEMP_COUNT"
+                    ((COUNT++))
                   fi
                   
-                  done
+                  done < <(tail -n +2 "$TCP_FILE")
 
                   # Final count calculations
-                  if [ -f "$TEMP_COUNT" ]; then
-                    COUNT=$(wc -l < "$TEMP_COUNT")
-                    rm "$TEMP_COUNT"
-                  fi
+
+          
 
                   if [ "$COUNT_ONLY" = true ]; then
                     echo "Total matching sockets:$COUNT"
