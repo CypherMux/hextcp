@@ -151,7 +151,7 @@ while read -r line; do
 
                     # Write to a temporary file for counting
                   
-                COUNT=$((COUNT + 1))
+                
                   
                   
                   done < <(tail -n +2 "$TCP_FILE")
@@ -161,7 +161,7 @@ while read -r line; do
           
 
                   if [ "$COUNT_ONLY" = true ]; then
-                    REAL_COUNT=$(tail -n +2 "$TCP_FILE" | wc -l)
+                    REAL_COUNT=$(tail -n +2 "$TCP_FILE" | wc --lines)
                     echo "Total matching sockets:$REAL_COUNT"
                   else
                     if [ -n "$OUTPUT_FILE" ] ; then
