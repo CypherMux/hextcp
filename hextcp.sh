@@ -22,3 +22,154 @@ show_help() {
     }
 
 # Parse command-line flags
+while getopts "o:6apch" opt; do
+  case ${opt} in
+  o ) OUTPUT_FILE=$OPTARG ;;
+  6 ) TCP_FILE="/proc/net/tcp6" ;;
+  a ) SHOW_ALL=true ;;
+  p ) SHOW_PROC=true ;;
+  c ) COUNT_ONLY=true ;;
+  h ) show_help ;;
+  \? ) echo "Invalid Option."
+1>&2; show_help ;;
+  esac
+done
+
+if [ ! -f "$TCP_FILE" ]; then
+  echo "Error: $TCP_FILE not found.Are you on Linux or is IPv6 disabled?"
+  exit 1
+fi
+
+# Loading Bar Functionality (Skip if -c is used)
+if [ "$COUNT_ONLY" = false ]; then
+  tput civis
+  for ((i = 0; i <= 100; i += 2)); do
+    filled=$((i * 40 / 100))
+    empty=$((40 - filled))
+    printf "\rParsing $TCP_FILE ["
+    printf "%0.s#" $(seq 1 $filled)
+    printf "%0.s-" $(seq 1 $empty)
+    printf "] %d%%" "$i"
+    sleep 0.01
+  done
+  printf "\n"
+  tput cnorm
+
+  echo ""
+  if [ "$SHOW_PROC" = true ]; then
+    printf "%-12s  %-22s  %-12s
+  %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT"
+  "PROCESS"
+    echo
+  "------------------------------------------------------------"
+    else
+      printf  "%-12s  %-22s  %s\n"
+    "STATE"  "LOCAL IP"  "LOCAL PORT"
+      echo
+  "------------------------------------------------------------"
+    fi
+  fi
+
+  # Clearing the output if specified
+  if [ -n "$OUTPUT_FILE" ]; then
+    > "$OUTPUT_FILE"
+  fi
+
+  # Set up temporary file for counting the lines
+  TEMP_COUNT="/tmp/hextcp_count_$$"
+  > "$TEMP_COUNT"
+
+  # Main logic loop
+tail -n +2 "$TCP_FILE" | while read -r
+line; do
+
+  # Read columns and turn into variables
+  read -r _ local_address _ state _ _
+_ _ _ inode _ <<< "$line"
+
+  # Parse State
+  if [ "$state" == "0A" ]; then
+    state_str="LISTEN"
+  elif [ "$state" == "01" ]; then
+    state_str="ESTABLISHED"
+  elif [ "$SHOW_ALL" = true ]; then
+    state_str="OTHER($state)"
+  else
+    continue
+  fi
+
+  # Separate the IP and Port's Hexadecimal
+  ip_hex="${local_address%:*}"
+  port_hex="${local_address#*:}"
+
+  # Convert the Port's Hexadecimal to Decimal Format
+  port_dec=$((16#$port_hex))
+
+  # Parse the IP address
+  if [ "$TCP_FILE" == "/proc/net/tcp" ]; then
+
+  # IPv4 Parsing (or reversing the Little-Endian)
+    b1=$((16#${ip_hex:6:2}))
+    b2=$((16#${ip_hex:4:2}))
+    b3=$((16#${ip_hex:2:2}))
+    b4=$((16#${ip_hex:0:2}))
+    ip_dec="$b1.$b2.$b3.$b4"
+  else
+
+  # IPv6 Parsing
+    ip_dec=""
+    for ((i=0; i<32; i+=8)); do
+      block="${ip_hex:$i:8}"
+      rev="$((16#${block:6:2}))$((16#${block:4:2}))$((16#${block:2:2}))$((16#${block:0:2}))"
+        ip_dec+="${rev:0:4}:${rev:4:4}:"
+          done
+          ip_dec="${ip_dec%:}"
+        fi
+
+        # Process Mapping (or finding the PID via the Inode)
+        proc_name=""
+        if [ "$SHOW_PROC" = true ]; then
+          pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
+
+            if [ -n "$pid" ]; then
+              p_name=$(cat /proc/$pid/comm 2>/dev/null)
+                proc_name="$p_name ($pid)"
+              else
+                proc_name="-"
+              fi
+            fi
+
+            # Formatting and printing the output
+            if [ "$COUNT_ONLY" = false ]; then
+              if [ "$SHOW_PROC" = true ]; then
+                output_line=$(printf "%-12s  %-22s  %-12s  %s"  "$state_str"  "$ip_dec"  "$port_dec")
+                  fi
+
+                  echo "$output_line"
+
+                  # Appending to a file if requested by the user
+                  if [ -n "$OUTPUT_FILE" ]; then
+                    echo "$output_line" >> "$OUTPUT_FILE"
+                    fi
+
+                    # Write to a temporary file for counting
+                    echo "count" >> "$TEMP_COUNT"
+                  done
+
+                  # Final count calculations
+                  if [ -f "$TEMP_COUNT" ]; then
+                    COUNT=$(wc -l < "$TEMP_COUNT")
+                    rm "$TEMP_COUNT"
+                  fi
+
+                  if [ "$COUNT_ONLY" = true ]; then
+                    echo "Total matching sockets:$COUNT"
+                  else
+                    if [-n "$OUTPUT_FILE" ]; then
+                      echo ""
+                      echo "Success! Decoded results are saved to: $OUTPUT_FILE"
+                        fi
+                    fi
+                  
+
+                  
