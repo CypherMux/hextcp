@@ -138,8 +138,10 @@ _ _ _ inode _ <<< "$line"
             # Formatting and printing the output
             if [ "$COUNT_ONLY" = false ]; then
               if [ "$SHOW_PROC" = true ]; then
-                output_line=$(printf "%-12s  %-22s  %-12s  %s"  "$state_str"  "$ip_dec"  "$port_dec")
-                  fi
+                output_line=$(printf "%-12s  %-22s  %-12s  %s"  "$state_str"  "$ip_dec"  "$port_dec"  "$proc_name")
+                  else 
+                    output_line=$(printf "%-12s  %-22s  %s"  "$state_str"  "$ip_dec"  "$port_dec")
+                      fi
 
                   echo "$output_line"
 
@@ -150,6 +152,8 @@ _ _ _ inode _ <<< "$line"
 
                     # Write to a temporary file for counting
                     echo "count" >> "$TEMP_COUNT"
+                  fi
+                  
                   done
 
                   # Final count calculations
