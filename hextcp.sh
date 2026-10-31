@@ -57,8 +57,7 @@ if [ "$COUNT_ONLY" = false ]; then
 
   echo ""
   if [ "$SHOW_PROC" = true ]; then
-    printf "%-12s  %-22s  %-12s
-  %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT" "PROCESS"
+    printf "%-12s  %-22s  %-12s %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT" "PROCESS"
     echo "------------------------------------------------------------"
     else
       printf  "%-12s  %-22s  %s\n" "STATE"  "LOCAL IP"  "LOCAL PORT"
