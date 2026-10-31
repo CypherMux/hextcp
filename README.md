@@ -91,7 +91,7 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 ## Examples of Some Commands
 
-*  **Prints only listening/established IPv4 ports *(default)**:
+*  **Prints only listening/established IPv4 ports (default)**:
 
 ```hextcp```
 
@@ -100,7 +100,7 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 <img width="957" height="681" alt="Screenshot From 2026-10-31 16-20-49" src="https://github.com/user-attachments/assets/7865b9e4-95c2-4b07-9c0f-183c7650ebfe" />
 
 
-*  **Replicate `netstat -tulpn` *(show all processes and ports)**:
+*  **Replicate `netstat -tulpn` (show all processes and ports)**:
 
 ```sudo hextcp -a -p```
 
