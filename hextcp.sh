@@ -161,7 +161,8 @@ while read -r line; do
           
 
                   if [ "$COUNT_ONLY" = true ]; then
-                    echo "Total matching sockets:$COUNT"
+                    REAL_COUNT=$(tail -n +2 "$TCP_FILE" | wc -1)
+                    echo "Total matching sockets:$REAL_COUNT"
                   else
                     if [ -n "$OUTPUT_FILE" ] ; then
                       echo ""
