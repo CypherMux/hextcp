@@ -42,11 +42,15 @@ fi
 
 # Loading Bar Functionality (Skip if -c is used)
 if [ "$COUNT_ONLY" = false ]; then
+  echo "hextcp - A tool by Stlwtrs"
+  echo ""
+  
   tput civis
   for ((i = 0; i <= 100; i += 2)); do
     filled=$((i * 40 / 100))
     empty=$((40 - filled))
-    printf "\r[hextcp by Stlwtrs] Parsing $TCP_FILE ["
+    
+    printf "\rParsing $TCP_FILE ["
     printf "%0.s#" $(seq 1 $filled)
     printf "%0.s-" $(seq 1 $empty)
     printf "] %d%%" "$i"
