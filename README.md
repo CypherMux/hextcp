@@ -120,6 +120,10 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 ```hextcp -c```
 
+
+<img width="957" height="355" alt="Screenshot From 2026-10-31 16-26-36" src="https://github.com/user-attachments/assets/dfdd7908-de9f-44ea-8fbd-50865d889eac" />
+
+
 ## Disclaimer
 
 *This tool is intended for educational purposes, CTFs, and authorized penetration testing. Always ensure you have explicit permission to enumerate systems you do not own.*
