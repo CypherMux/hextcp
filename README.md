@@ -112,6 +112,10 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 ```hextcp -6 -a -o <file_name>```
 
+
+<img width="957" height="567" alt="Screenshot From 2026-10-31 16-25-30" src="https://github.com/user-attachments/assets/d5ce851d-8d2e-43a3-bc5b-6d2f494c9c81" />
+
+
 * **Count the number of listening ports:**
 
 ```hextcp -c```
