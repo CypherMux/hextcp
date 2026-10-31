@@ -147,10 +147,12 @@ while read -r line; do
                   if [ -n "$OUTPUT_FILE" ]; then
                     echo "$output_line" >> "$OUTPUT_FILE"
                     fi
+                  fi
 
                     # Write to a temporary file for counting
-                    ((COUNT++))
-                  fi
+                  
+                COUNT=$((COUNT + 1))
+                  
                   
                   done < <(tail -n +2 "$TCP_FILE")
 
