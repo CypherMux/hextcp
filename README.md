@@ -104,6 +104,10 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 ```sudo hextcp -a -p```
 
+
+<img width="957" height="723" alt="Screenshot From 2026-10-31 16-23-21" src="https://github.com/user-attachments/assets/4e7f97d4-fb2b-4425-b4ba-e499846b8bb9" />
+
+
 *  **Save all IPv6 connections to a file:**
 
 ```hextcp -6 -a -o <file_name>```
