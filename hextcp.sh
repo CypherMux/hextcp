@@ -60,13 +60,10 @@ if [ "$COUNT_ONLY" = false ]; then
     printf "%-12s  %-22s  %-12s
   %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT"
   "PROCESS"
-    echo
-  "------------------------------------------------------------"
+    echo "------------------------------------------------------------"
     else
-      printf  "%-12s  %-22s  %s\n"
-    "STATE"  "LOCAL IP"  "LOCAL PORT"
-      echo
-  "------------------------------------------------------------"
+      printf  "%-12s  %-22s  %s\n" "STATE"  "LOCAL IP"  "LOCAL PORT"
+      echo "------------------------------------------------------------"
     fi
   fi
 
@@ -80,8 +77,7 @@ if [ "$COUNT_ONLY" = false ]; then
   > "$TEMP_COUNT"
 
   # Main logic loop
-tail -n +2 "$TCP_FILE" | while read -r
-line; do
+tail -n +2 "$TCP_FILE" | while read -r line; do
 
   # Read columns and turn into variables
   read -r _ local_address _ state _ _
