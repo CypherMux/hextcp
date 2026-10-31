@@ -80,8 +80,7 @@ if [ "$COUNT_ONLY" = false ]; then
 tail -n +2 "$TCP_FILE" | while read -r line; do
 
   # Read columns and turn into variables
-  read -r _ local_address _ state _ _
-_ _ _ inode _ <<< "$line"
+  read -r _ local_address _ state _ _ _ _ _ inode _ <<< "$line"
 
   # Parse State
   if [ "$state" == "0A" ]; then
