@@ -166,7 +166,7 @@ tail -n +2 "$TCP_FILE" | while read -r line; do
                   if [ "$COUNT_ONLY" = true ]; then
                     echo "Total matching sockets:$COUNT"
                   else
-                    if [-n "$OUTPUT_FILE" ]; then
+                    if [ -n "$OUTPUT_FILE" ]; then
                       echo ""
                       echo "Success! Decoded results are saved to: $OUTPUT_FILE"
                         fi
