@@ -238,7 +238,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                 
                   
                   
-                  done < <(tail -n +2 "$TCP_FILE")
+                  done
 
                   # Final count calculations
 
@@ -253,6 +253,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                       echo "Success! Decoded results are saved to: $OUTPUT_FILE"
                         fi
                     fi
+                fi
                   
                   
 
