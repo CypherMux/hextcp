@@ -62,6 +62,54 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                 echo "STATE          PROCESS PATH" > "$OUTPUT_FILE"
                 exit 0
               fi
+
+              
+      # Read /proc/net/unix
+      tail -n +2 "$TCP_FILE" | while read -r line; do
+
+      # Extract Columns Safely Using awk
+
+      state=$(echo "$line" | awk '{print $6}')
+      inode=$(echo "$line" | awk '{print $7}')
+      path=$(echo "$line" | awk '{print $8}')
+
+      # If path is empty, it is an unnamed socket
+      if [ -z "$path" ]; then
+        path="(unnamed)"
+      fi
+
+      
+      # Process Mapping 
+      proc_name="-"
+      if [ "SHOW_PROC" = true ]; then
+        pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
+          if [ -n "$pid" ]; then
+            p_name=$(cat /proc/$pid/comm 2>/dev/null)
+              proc_name-"$p_name($pid)"
+                  fi
+                fi
+
+      # Output Formatiing
+      if [ "SHOW_PROC" = true ]; then
+        
+        output_line=$(printf "%-12s  %-22s  %s" "$state"  "$proc_name"  "$path")
+          else
+            output_line=$(printf "%-12s  %s" "$state"  "$path")
+              fi
+
+              echo "$output_line"
+              
+              if [ -n "$OUTPUT_FILE" ]; then
+
+      echo "$output_line" >> "$OUTPUT_FILE";
+      fi
+        done
+            
+          
+
+        # Exit the script so TCP logic below does not run as well
+        exit 0
+      fi
       
 
 # Loading Bar Functionality (Skip if -c is used)
@@ -97,67 +145,6 @@ if [ "$COUNT_ONLY" = false ]; then
   if [ -n "$OUTPUT_FILE" ]; then
     > "$OUTPUT_FILE"
   fi
-
-  # Unix Socket Parsing
-    if [ -n "$OUTPUT_FILE" ]; then
-      echo "STATE            PROCESS PATH" > "$OUTPUT_FILE"
-      fi
-
-      # Read /proc/net/unix
-      tail -n +2 "$TCP_FILE" | while read -r line; do
-
-      # Extract Columns Safely Using awk
-
-      state=$(echo "$line" | awk '{print $6}')
-      inode=$(echo "$line" | awk '{print $7}')
-      path=$(echo "$line" | awk '{print $8}')
-
-      # If path is empty, it is an unnamed socket
-      if [ -z "$path" ]; then
-        path="(unnamed)"
-      fi
-
-      # Process Mapping 
-      proc_name="-"
-      if [ "SHOW_PROC" = true ]; then
-        pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
-          if [ -n "$pid" ]; then
-            p_name=$(cat /proc/$pid/comm 2>/dev/null)
-              proc_name-"$p_name($pid)"
-                  fi
-                fi
-
-      # Output Formatiing
-      if [ "SHOW_PROC" = true ]; then
-        
-        output_line=$(printf "%-12s  %-22s  %s" "$state"  "$proc_name"  "$path")
-          else
-            output_line=$(printf "%-12s  %s" "$state"  "$path")
-              fi
-
-              echo "$output_line"
-              
-              if [ -n "$OUTPUT_FILE" ]; then
-
-      echo "$output_line" >> "$OUTPUT_FILE";
-      fi
-        done
-            
-          
-
-        # Exit the script so TCP logic below does not run as well
-          exit 0
-        fi
-
-    # END OF UNIX SOCKET PARSING
-
-      
-
-      
-
-      
-  
-
 
   # Main logic loop
 COUNT=0
