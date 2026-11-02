@@ -155,7 +155,7 @@ while read -r line; do
   elif [ "$state" == "01" ]; then
     state_str="ESTABLISHED"
   elif [ "$SHOW_ALL" = true ]; then
-    state_str="OTHER(${state})"
+    state_str="OTHER: $state"
   else
     continue
   fi
