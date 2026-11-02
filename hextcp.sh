@@ -81,7 +81,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
       
       # Process Mapping 
       proc_name="-"
-      if [ "SHOW_PROC" = true ]; then
+      if [ "$SHOW_PROC" = "true" ]; then
         pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
           if [ -n "$pid" ]; then
             p_name=$(cat /proc/$pid/comm 2>/dev/null)
