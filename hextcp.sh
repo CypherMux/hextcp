@@ -150,17 +150,16 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                   echo "$output_line" >> "$OUTPUT_FILE";
             fi
         done < <(tail -n +2 "$TCP_FILE")
-            
-          
 
-        # Exit the script so TCP logic below does not run as well
-        exit 0
-      fi
+        # Close the UNIX block
+        fi
 
-  # Main logic loop
-COUNT=0
+  # TCP LOOP (Only will run if not UNIX)
+  if [ "$SOCKET_MODE" != "unix" ]; then
 
-tail -n +2 "$TCP_FILE" | while read -r line; do
+    COUNT=0
+
+    tail -n +2 "$TCP_FILE" | while read -r line; do
 
   # Read columns and turn into variables
   local_address=$(echo "$line" | awk '{print $2}')
