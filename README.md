@@ -41,9 +41,11 @@ The tool uses pure Bash to translate the kernel's data:
 
 *  **3. IPv4 Conversion:** It uses Bash substring extraction (`${ip_hex:6:2}`) to grab the hex string two bytes at a time, convert them to decimal format, and reverse the byte order.
 
-*  **4. IPv6 Conversion:** It chunks the 32-character hex string into 4-byte blocks,reverses the byte order, and formats it with colons.
+*  **4. Unix Socket Parsing:** It reads `/proc/net/unix`. It then extracts the state, inode, and path using the `awk` command. If the path is presenting as empty, it will label it as `(unnamed)`.
 
-*  **5. Process Mapping (`-p`):** It takes the socket's Inode number and uses the command `find /proc/*/fd -lname "socket:\[$inode\]"` to locate which process file descriptor is holding that specified socket.
+*  **5. IPv6 Conversion:** It chunks the 32-character hex string into 4-byte blocks,reverses the byte order, and formats it with colons.
+
+*  **6. Process Mapping (`-p`):** It takes the socket's Inode number and uses the command `find /proc/*/fd -lname "socket:\[$inode\]"` to locate which process file descriptor is holding that specified socket.
 
 ## Installation & Usage
 
