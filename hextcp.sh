@@ -120,7 +120,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
       
       # Process Mapping 
       proc_name="-"
-      if [ "$SHOW_PROC" = "true" ]; then
+      if [ "$SHOW_PROC" = true ]; then
     fi
 
       # Use lsof to map the unix socket path to a PID
