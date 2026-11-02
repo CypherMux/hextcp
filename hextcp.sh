@@ -32,9 +32,8 @@ while getopts "o:6apcuh" opt; do
   p ) SHOW_PROC=true ;;
   c ) COUNT_ONLY=true ;;
   h ) show_help ;;
-  u ) SOCKET_MODE="unix"
-  \? ) echo "Invalid Option."
-1>&2; show_help ;;
+  u ) SOCKET_MODE="unix" ;;
+  \? ) echo "Invalid Option." 1>&2; show_help ;;
   esac
 done
 
