@@ -66,6 +66,9 @@ if [ "$COUNT_ONLY" = false ]; then
   tput cnorm
 
   echo ""
+
+  # ONLY PRINTS TCP HEADERS IF WE ARE NOT IN UNIX MODE
+if [ "$SOCKET_MODE" == "tcp" ]; then
   if [ "$SHOW_PROC" = true ]; then
     printf "%-12s  %-22s  %-12s %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT" "PROCESS"
     echo "------------------------------------------------------------"
