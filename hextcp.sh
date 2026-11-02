@@ -86,7 +86,6 @@ if [ "$COUNT_ONLY" = false ]; then
   fi
 
   # Unix Socket Parsing
-  if [ "$SOCKET_MODE" == "unix" ]; then
     if [ -n "$OUTPUT_FILE" ]; then
       echo "STATE            PROCESS PATH" > "$OUTPUT_FILE"
       fi
