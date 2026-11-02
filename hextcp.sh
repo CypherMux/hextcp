@@ -121,12 +121,17 @@ if [ "$SOCKET_MODE" == "unix" ]; then
       # Process Mapping 
       proc_name="-"
       if [ "$SHOW_PROC" = "true" ]; then
+
+      # Use lsof to map the unix socket path to a PID
+      if [ -n "$path" ] && [ "$path" | = "(unnamed)" ]; then
+        pid=$(lsof -U 2>/dev/null | grep "$path" | awk '{print $2}' | head -n 1)
         pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
           if [ -n "$pid" ]; then
             p_name=$(cat /proc/$pid/comm 2>/dev/null)
               proc_name="$p_name $pid"
                   fi
                 fi
+              fi
 
       # Output Formatiing
       if [ "$SHOW_PROC" = true ]; then
