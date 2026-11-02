@@ -123,7 +123,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
       # Use lsof to map the unix socket path to a PID
      pid=""
-     if [ -n "$path" ] && [ "$path" ! = "(unnamed)" ]; then
+     if [ -n "$path" ] && [ "$path" != "(unnamed)" ]; then
        pid=$(lsof -U 2>/dev/null | grep "$path" | awk '{print $2}' | head -n 1)
          else
            pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
