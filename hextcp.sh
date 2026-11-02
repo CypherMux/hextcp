@@ -211,7 +211,7 @@ while read -r line; do
 
             if [ -n "$pid" ]; then
               p_name=$(cat /proc/$pid/comm 2>/dev/null)
-                proc_name="$p_name ($pid)"
+                proc_name="$p_name - $pid"
               else
                 proc_name="-"
               fi
