@@ -48,8 +48,20 @@ fi
 
 # UNIX SOCKET PARSING
 if [ "$SOCKET_MODE" == "unix" ]; then
-  exit 0
-fi
+  if [ "$COUNT_ONLY" = false ]; then
+    echo ""
+    if [ "$SHOW_PROC" = true ]; then
+      printf "%-12s  %-22s  %s\n"  "STATE"  "PROCESS"  "PATH"
+        echo "-----------------------------------------------------------"
+          else
+            printf "%-12s  %s\n"  "STATE"  "PATH"
+              echo "---------------------------------------------------------"
+                fi
+              fi
+              if [ -n "$OUTPUT_FILE" ]; then
+                echo "STATE          PROCESS PATH" > "$OUTPUT_FILE"
+              fi
+      
 
 # Loading Bar Functionality (Skip if -c is used)
 if [ "$COUNT_ONLY" = false ]; then
