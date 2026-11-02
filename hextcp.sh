@@ -120,7 +120,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
         pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
           if [ -n "$pid" ]; then
             p_name=$(cat /proc/$pid/comm 2>/dev/null)
-              proc_name-"$p_name($pid)"
+              proc_name-"$p_name - $pid"
                   fi
                 fi
 
