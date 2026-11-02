@@ -19,6 +19,8 @@ I built this tool because manually doing the hex-to-decimal math and reversing b
 
 *  **100% Native Bash:** No Python, Ruby, or external dependencies required. This tool runs purely on built-in Bash features such as parameter expansion and arithmetic expansion.
 
+*  **Unix Socket Support:** It parses `/proc/net/unix` to enumerate local inter-process communication sockets. *(such as Docker, D-Bus, or systemd.)*
+
 *  **IPv4 & IPv6 Support:** It can parse both `/proc/net/tcp` and `/proc/net/tcp6`.
 
 *  **Process Mapping:** Cross references socket inodes with `/proc/` to find the exact running process name and PID running the socket. *(Requires `sudo`)*
@@ -87,6 +89,8 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 * `-c`: Count only. Outputs the total number of matching sockets instead of the full table.
 
+* `-u`: Parse the Unix socket table (`/proc/net/unix`) instead of TCP.
+
 * `-h`: Display the help menu.
 
 ## Examples of Some Commands
@@ -122,6 +126,10 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 
 <img width="957" height="355" alt="Screenshot From 2026-10-31 16-26-36" src="https://github.com/user-attachments/assets/dfdd7908-de9f-44ea-8fbd-50865d889eac" />
+
+*  **Find local Unix sockets and the processes using them:**
+
+```sudo hextcp -u -p```
 
 
 ## Disclaimer
