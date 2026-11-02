@@ -6,6 +6,7 @@ TCP_FILE="/proc/net/tcp"
 SHOW_ALL=false
 SHOW_PROC=false
 COUNT_ONLY=false
+SOCKET_MODE="tcp"
 
 # Help menu functionality
 show_help() {
@@ -15,6 +16,7 @@ show_help() {
   echo " -o <file>    Save decoded output to a specified file"
   echo " -a           Show ALL connection states (not just LISTEN/ESTABLISHED)"
   echo " -6           Parse IPv6 table (/proc/net/tcp6) instead of IPv4"
+  echo " -u           Parse Unix sockets (/proc/net/unix)"
   echo " -p           Show Process/PID (requires root/sudo for all processes)"
   echo " -c           Count the number of matching sockets only"
   echo " -h           Show this help message"
@@ -22,7 +24,7 @@ show_help() {
     }
 
 # Parse command-line flags
-while getopts "o:6apch" opt; do
+while getopts "o:6apcuh" opt; do
   case ${opt} in
   o ) OUTPUT_FILE=$OPTARG ;;
   6 ) TCP_FILE="/proc/net/tcp6" ;;
@@ -30,10 +32,15 @@ while getopts "o:6apch" opt; do
   p ) SHOW_PROC=true ;;
   c ) COUNT_ONLY=true ;;
   h ) show_help ;;
+  u ) SOCKET_MODE="unix"
   \? ) echo "Invalid Option."
 1>&2; show_help ;;
   esac
 done
+
+if [ "$SOCKET_MODE" == "unix" ]; then
+  TCP_FILE="/proc/net/unix"
+fi
 
 if [ ! -f "$TCP_FILE" ]; then
   echo "Error: $TCP_FILE not found.Are you on Linux or is IPv6 disabled?"
@@ -73,6 +80,64 @@ if [ "$COUNT_ONLY" = false ]; then
   if [ -n "$OUTPUT_FILE" ]; then
     > "$OUTPUT_FILE"
   fi
+
+  # Unix Socket Parsing
+  if [ "$SOCKET_MODE" == "unix" ]; then
+    if [ -n "$OUTPUT_FILE" ]; then
+      echo "STATE            PROCESS PATH" > "$OUTPUT_FILE"
+      fi
+
+      # Read /proc/net/unix
+      tail -n +2 "$TCP_FILE" | while read -r line; do
+
+      # Extract Columns Safely Using awk
+
+      state=$(echo "$line" | awk '{print $6}')
+      inode=$(echo "$line" | awk '{print $7}')
+      path=$(echo "$line" | awk '{print $8}')
+
+      # If path is empty, it is an unnamed socket
+      if [ -z "$path" ]; then
+        path="(unnamed)"
+      fi
+
+      # Process Mapping 
+      proc_name="-"
+      if [ "SHOW_PROC" = true ]; then
+        pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
+          if [ -n "$pid" ]; then
+            p_name=$(cat /proc/$pid/comm 2>/dev/null)
+              proc_name-"$p_name($pid)"
+                  fi
+                fi
+
+      # Output Formatiing
+      if [ "SHOW_PROC" = true ]; then
+        output_line=$(printf "%-12s  %-22s  %s" "$state"  "$proc_name"  "$path")
+          else
+            output_line=$(printf "%-12s  %s" "$state"  "$path")
+              fi
+
+              echo "$output_line"
+              if [ -n $OUTPUT_FILE" ]; then
+      echo "$output_line" >> "$OUTPUT_FILE";
+      fi
+        done
+            
+          
+
+        # Exit the script so TCP logic below does not run as well
+          exit 0
+        fi
+
+    # END OF UNIX SOCKET PARSING
+
+      
+
+      
+
+      
+  
 
 
   # Main logic loop
