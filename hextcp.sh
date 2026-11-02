@@ -46,6 +46,41 @@ if [ ! -f "$TCP_FILE" ]; then
   exit 1
 fi
 
+# Loading Bar Functionality (Skip if -c is used)
+if [ "$COUNT_ONLY" = false ]; then
+  echo "hextcp - A tool by Stlwtrs"
+  echo ""
+  
+  tput civis
+  for ((i = 0; i <= 100; i += 2)); do
+    filled=$((i * 40 / 100))
+    empty=$((40 - filled))
+    
+    printf "\rParsing $TCP_FILE ["
+    printf "%0.s#" $(seq 1 $filled)
+    printf "%0.s-" $(seq 1 $empty)
+    printf "] %d%%" "$i"
+    sleep 0.01
+  done
+  printf "\n"
+  tput cnorm
+
+  echo ""
+  if [ "$SHOW_PROC" = true ]; then
+    printf "%-12s  %-22s  %-12s %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT" "PROCESS"
+    echo "------------------------------------------------------------"
+    else
+      printf  "%-12s  %-22s  %s\n" "STATE"  "LOCAL IP"  "LOCAL PORT"
+      echo "------------------------------------------------------------"
+    fi
+  fi
+
+  # Clearing the output if specified
+  if [ -n "$OUTPUT_FILE" ]; then
+    > "$OUTPUT_FILE"
+  fi
+
+
 # UNIX SOCKET PARSING
 if [ "$SOCKET_MODE" == "unix" ]; then
   if [ "$COUNT_ONLY" = false ]; then
