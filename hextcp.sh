@@ -66,6 +66,7 @@ if [ "$COUNT_ONLY" = false ]; then
   tput cnorm
 
   echo ""
+fi
 
   # ONLY PRINTS TCP HEADERS IF WE ARE NOT IN UNIX MODE
 if [ "$SOCKET_MODE" == "tcp" ]; then
@@ -247,7 +248,7 @@ while read -r line; do
                       echo "Success! Decoded results are saved to: $OUTPUT_FILE"
                         fi
                     fi
-                  fi
+                  
                   
 
                   
