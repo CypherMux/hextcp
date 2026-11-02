@@ -60,6 +60,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
               fi
               if [ -n "$OUTPUT_FILE" ]; then
                 echo "STATE          PROCESS PATH" > "$OUTPUT_FILE"
+                exit 0
               fi
       
 
@@ -128,13 +129,16 @@ if [ "$COUNT_ONLY" = false ]; then
 
       # Output Formatiing
       if [ "SHOW_PROC" = true ]; then
+        
         output_line=$(printf "%-12s  %-22s  %s" "$state"  "$proc_name"  "$path")
           else
             output_line=$(printf "%-12s  %s" "$state"  "$path")
               fi
 
               echo "$output_line"
-              if [ -n $OUTPUT_FILE" ]; then
+              
+              if [ -n "$OUTPUT_FILE" ]; then
+
       echo "$output_line" >> "$OUTPUT_FILE";
       fi
         done
