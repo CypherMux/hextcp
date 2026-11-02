@@ -46,6 +46,11 @@ if [ ! -f "$TCP_FILE" ]; then
   exit 1
 fi
 
+# UNIX SOCKET PARSING
+if [ "$SOCKET_MODE" == "unix" ]; then
+  exit 0
+fi
+
 # Loading Bar Functionality (Skip if -c is used)
 if [ "$COUNT_ONLY" = false ]; then
   echo "hextcp - A tool by Stlwtrs"
@@ -155,7 +160,7 @@ while read -r line; do
   elif [ "$state" == "01" ]; then
     state_str="ESTABLISHED"
   elif [ "$SHOW_ALL" = true ]; then
-    state_str="OTHER: $state"
+    state_str="OTHER(${state})"
   else
     continue
   fi
