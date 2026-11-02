@@ -247,6 +247,7 @@ while read -r line; do
                       echo "Success! Decoded results are saved to: $OUTPUT_FILE"
                         fi
                     fi
+                  fi
                   
 
                   
