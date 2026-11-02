@@ -147,9 +147,9 @@ if [ "$SOCKET_MODE" == "unix" ]; then
               
               if [ -n "$OUTPUT_FILE" ]; then
 
-      echo "$output_line" >> "$OUTPUT_FILE";
-      fi
-        done
+                  echo "$output_line" >> "$OUTPUT_FILE";
+            fi
+        done < <(tail -n +2 "$TCP_FILE")
             
           
 
@@ -160,7 +160,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
   # Main logic loop
 COUNT=0
 
-while read -r line; do
+tail -n +2 "$TCP_FILE" | while read -r line; do
 
   # Read columns and turn into variables
   local_address=$(echo "$line" | awk '{print $2}')
