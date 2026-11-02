@@ -126,7 +126,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
      if [ -n "$path" ] && [ "$path" ! = "(unnamed)" ]; then
        pid=$(lsof -U 2>/dev/null | grep "$path" | awk '{print $2}' | head -n 1)
          else
-           pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d\ -f3)
+           pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
              fi
 
              if [ -n "$pid" ]; then
