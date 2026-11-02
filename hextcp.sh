@@ -129,7 +129,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                 fi
 
       # Output Formatiing
-      if [ "SHOW_PROC" = true ]; then
+      if [ "$SHOW_PROC" = true ]; then
         
         output_line=$(printf "%-12s  %-22s  %s" "$state"  "$proc_name"  "$path")
           else
