@@ -132,6 +132,10 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 ```sudo hextcp -u -p```
 
 
+<img width="957" height="1072" alt="Screenshot From 2026-11-02 14-01-02" src="https://github.com/user-attachments/assets/3217e276-ad12-43dc-8e24-1bfa0d379cc4" />
+
+
+
 ## Disclaimer
 
 *This tool is intended for educational purposes, CTFs, and authorized penetration testing. Always ensure you have explicit permission to enumerate systems you do not own.*
