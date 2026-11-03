@@ -72,7 +72,7 @@ if [ "$COUNT_ONLY" = false ]; then
 fi
 
   # ONLY PRINTS TCP HEADERS IF WE ARE NOT IN UNIX MODE
-if [ "$SOCKET_MODE" == "tcp" ]; &&
+if [ "$SOCKET_MODE" == "tcp" ] &&
   [ "$JSON_OUT" = false ]; then
   if [ "$SHOW_PROC" = true ]; then
     printf "%-12s  %-22s  %-12s %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT" "PROCESS"
@@ -91,7 +91,7 @@ if [ "$SOCKET_MODE" == "tcp" ]; &&
 
 # UNIX SOCKET PARSING
 if [ "$SOCKET_MODE" == "unix" ]; then
-  if [ "$COUNT_ONLY" = false ]; &&
+  if [ "$COUNT_ONLY" = false ] &&
     [ "$JSON_OUT" = false ]; then
     echo ""
     if [ "$SHOW_PROC" = true ]; then
