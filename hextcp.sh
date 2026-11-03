@@ -7,6 +7,7 @@ SHOW_ALL=false
 SHOW_PROC=false
 COUNT_ONLY=false
 SOCKET_MODE="tcp"
+JSON_OUT=false
 
 # Help menu functionality
 show_help() {
@@ -19,12 +20,13 @@ show_help() {
   echo " -u           Parse Unix sockets (/proc/net/unix)"
   echo " -p           Show Process/PID (requires root/sudo for all processes)"
   echo " -c           Count the number of matching sockets only"
+  echo " -j           Output results in JSON format"
   echo " -h           Show this help message"
     exit 0
     }
 
 # Parse command-line flags
-while getopts "o:6apcuh" opt; do
+while getopts "o:6apcuhj" opt; do
   case ${opt} in
   o ) OUTPUT_FILE=$OPTARG ;;
   6 ) TCP_FILE="/proc/net/tcp6" ;;
@@ -33,6 +35,7 @@ while getopts "o:6apcuh" opt; do
   c ) COUNT_ONLY=true ;;
   h ) show_help ;;
   u ) SOCKET_MODE="unix" ;;
+  j ) JSON_OUT=true ;;
   \? ) echo "Invalid Option." 1>&2; show_help ;;
   esac
 done
