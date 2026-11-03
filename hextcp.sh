@@ -136,7 +136,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
      # Mapping Unix Socket Paht to a PID CONT...
          for fd in /proc/[0-9]*/fd/*; do
          target=$(ls -l "$fd" 2>/dev/null)
-           if [ "$target" == *"socket:\[$clean_inode\]"* ]; then
+           if [[ "$target" == *"socket:\[$clean_inode\]"* ]]; then
              temp="${fd#/proc/}"
              pid="${temp%%/*}"
              break
@@ -230,7 +230,7 @@ inode="$10"
          pid=""
 
          # Clean the Inode removing any hidden characters
-         clean_inode="$[inode//[[:space:]]/}"
+         clean_inode="${inode//[[:space:]]/}"
          
                  for fd in /proc/[0-9]*/fd/*; do
                    target=$(ls -l "$fd" 2>/dev/null)
