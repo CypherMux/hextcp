@@ -133,8 +133,8 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
      # Mapping Unix Socket Paht to a PID CONT...
          for fd in /proc/[0-9]*/fd/*; do
-         target=$(ls -l "$fd" 2>/dev/null)
-           if [[ "$target" == *"socket:\[$clean_inode\]"* ]]; then
+         target=$(readlink "$fd" 2>/dev/null)
+           if [ "$target" == "socket:\[$clean_inode\]" ]; then
              temp="${fd#/proc/}"
              pid="${temp%%/*}"
              break
@@ -230,7 +230,7 @@ inode="${cols[9]}"
          clean_inode=$(echo "$inode" | tr -d '\r\n ')
          
                  for fd in /proc/[0-9]*/fd/*; do
-                   target=$(ls -l "$fd" 2>/dev/null)
+                   target=$(readlink "$fd" 2>/dev/null)
                    if [[ "$target" == *"socket:\[$clean_inode\]"* ]]; then
                    temp="${fd#/proc/}"
                    pid="${temp%%/*}"
