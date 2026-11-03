@@ -226,10 +226,15 @@ inode="$10"
 
         # Process Mapping (or finding the PID via the Inode)
         proc_name=""
-        if [ "$SHOW_PROC" = true ]; then
+        if [ "$SHOW_PROC" == "true" ]; then
          pid=""
+
+         # Clean the Inode removing any hidden characters
+         clean_inode="$[inode//[[:space:]]/}"
+         
                  for fd in /proc/[0-9]*/fd/*; do
-                   if [ "$(readlink "$fd" 2>/dev/null)" == "socket:\[$inode\]" ]; then
+                   target=$(ls -l "$fd" 2>/dev/null)
+                   if [[ "$target" == *"socket:\[$clean_inode\]"* ]]; then
                    temp="${fd#/proc/}"
                    pid="${temp%%/*}"
                    break
@@ -238,9 +243,7 @@ inode="$10"
 
                   if [ -n "$pid" ]; then
                     read -r p_name < "/proc/$pid/comm" 2>/dev/null
-                proc_name="$p_name $pid"
-              else
-                proc_name="-"
+                proc_name="$p_name ($pid)"
               fi
             fi
 
