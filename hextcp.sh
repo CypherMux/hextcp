@@ -99,7 +99,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
               fi
               if [ -n "$OUTPUT_FILE" ]; then
                 echo "STATE          PROCESS PATH" > "$OUTPUT_FILE"
-                exit 0
+                
               fi
 
               
