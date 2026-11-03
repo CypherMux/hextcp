@@ -156,7 +156,6 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                     else
                       output_line=$(printf "%-12s  %s"  "$state"  "$path")
                     fi
-                  fi
 
                   echo "$output_line"
 
