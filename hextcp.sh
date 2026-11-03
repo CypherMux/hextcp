@@ -110,12 +110,10 @@ if [ "$SOCKET_MODE" == "unix" ]; then
       FIRST_LINE=false; continue; fi
 
       # Extract Columns Safely Using "read"
-
-     set -- $line
-
-       state="$6"
-       inode="$7"
-       path="$8"
+      read -r -a cols <<< "$line"
+      state="${cols[5]}"
+      inode="${cols[6]}"
+      path="${cols[7]}"
        
 
       # If path is empty, it is an unnamed socket
@@ -131,7 +129,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
       # Map the Unix Socket Path to a PID
      pid=""
      # Clean the Inode of any descriptors
-     clean_inode="${inode//[[:space:]]/}"
+     clean_inode="${inode}"
 
      # Mapping Unix Socket Paht to a PID CONT...
          for fd in /proc/[0-9]*/fd/*; do
@@ -179,11 +177,10 @@ if [ "$SOCKET_MODE" == "unix" ]; then
     FIRST_LINE=false; continue; fi
 
   # Read columns and turn into variables
-set -- $line
-
-local_address="$2"
-state="$4"
-inode="$10"
+read -r -a cols <<< "$line"
+local_address="${cols[1]}"
+state="${cols[3]}"
+inode="${cols[9]}"
 
   # Parse State
   if [ "$state" == "0A" ]; then
@@ -230,7 +227,7 @@ inode="$10"
          pid=""
 
          # Clean the Inode removing any hidden characters
-         clean_inode="${inode//[[:space:]]/}"
+         clean_inode="${inode}"
          
                  for fd in /proc/[0-9]*/fd/*; do
                    target=$(ls -l "$fd" 2>/dev/null)
