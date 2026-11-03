@@ -121,11 +121,17 @@ if [ "$SOCKET_MODE" == "unix" ]; then
       
       # Process Mapping 
       proc_name="-"
+      if [ "$SHOW_PROC" == "true" ]; then
 
-      # Use lsof to map the unix socket path to a PID
+      # Map the Unix Socket Path to a PID
      pid=""
+     # Clean the Inode of any descriptors
+     clean_inode="${inode//[[:space:]]/}"
+
+     # Mapping Unix Socket Paht to a PID CONT...
          for fd in /proc/[0-9]*/fd/*; do
-           if [ "$readlink "$fd" 2>/dev/null)" == "socket:\[$inode\]" ]; then
+         target=$(readlink "$fd" 2>/dev/null)
+           if [ "$target" == "socket:\[$clean_inode\]" ]; then
              temp="${fd#/proc/}"
              pid="${temp%%/*}"
              break
@@ -136,6 +142,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
             read -r p_name < "/proc/$pid/comm" 2>/dev/null
             proc_name="$p_name ($pid)"
             fi
+          fi
 
       # Output Formatiing
       if [ "$SHOW_PROC" = true ]; then
