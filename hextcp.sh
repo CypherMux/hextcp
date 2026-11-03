@@ -72,7 +72,8 @@ if [ "$COUNT_ONLY" = false ]; then
 fi
 
   # ONLY PRINTS TCP HEADERS IF WE ARE NOT IN UNIX MODE
-if [ "$SOCKET_MODE" == "tcp" ]; then
+if [ "$SOCKET_MODE" == "tcp" ]; &&
+  [ "$JSON_OUT" = false ]; then
   if [ "$SHOW_PROC" = true ]; then
     printf "%-12s  %-22s  %-12s %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT" "PROCESS"
     echo "------------------------------------------------------------"
@@ -90,7 +91,8 @@ if [ "$SOCKET_MODE" == "tcp" ]; then
 
 # UNIX SOCKET PARSING
 if [ "$SOCKET_MODE" == "unix" ]; then
-  if [ "$COUNT_ONLY" = false ]; then
+  if [ "$COUNT_ONLY" = false ]; &&
+    [ "$JSON_OUT" = false ]; then
     echo ""
     if [ "$SHOW_PROC" = true ]; then
       printf "%-12s  %-22s  %s\n"  "STATE"  "PROCESS"  "PATH"
@@ -138,20 +140,31 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                 fi
 
       # Output Formatiing
-      if [ "$SHOW_PROC" = true ]; then
-        
-        output_line=$(printf "%-12s  %-22s  %s" "$state"  "$proc_name"  "$path")
-          else
-            output_line=$(printf "%-12s  %s" "$state"  "$path")
-              fi
+      if [ "$COUNT_ONLY" = false ]; then
+        if [ "$JSON_OUT" == "true" ];
+      then
+            if [ "$SHOW_PROC" == "true" ];
+      then
+              output_line="{\type\":\"unix",\"state\":\:"$state\",\"path\":\"$path\"}"
+                else
+                  output_line="{\"type\":\"unix\",\"state\":\"$state\",\"path\":\"$path\"}"
+                fi
+              else
+                if [ "$SHOW_PROC" = true ];
+          then
+                  output_line=$(printf "%-12s  %-22s  %s"  "$state"  "$proc_name"  "$path")
+                    else
+                      output_line=$(printf "%-12s  %s"  "$state"  "$path")
+                    fi
+                  fi
 
-              echo "$output_line"
-              
-              if [ -n "$OUTPUT_FILE" ]; then
+                  echo "$output_line"
 
-                  echo "$output_line" >> "$OUTPUT_FILE";
-            fi
-        done < <(tail -n +2 "$TCP_FILE")
+                  if [ -n "$OUTPUT_FILE" ]; then
+                    echo "$output_line" >> "$OUTPUT_FILE"
+                  fi
+                fi
+                
 
         # Close the UNIX block
         fi
@@ -222,13 +235,23 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
             # Formatting and printing the output
             if [ "$COUNT_ONLY" = false ]; then
-              if [ "$SHOW_PROC" = true ]; then
-                output_line=$(printf "%-12s  %-22s  %-12s  %s"  "$state_str"  "$ip_dec"  "$port_dec"  "$proc_name")
-                  else 
-                    output_line=$(printf "%-12s  %-22s  %s"  "$state_str"  "$ip_dec"  "$port_dec")
-                      fi
+              if [ "$JSON_OUT" == "true" ]; then
+                if [ "$SHOW_PROC" == "true" ];
+              then
 
-                  echo "$output_line"
+                  output_line="{\"type\":\"tcp\",\"state\":\"$state_str\",\"local_ip\":\"$ip_dec\",\"local_port\":$port_dec,\"process\":\"$proc_name\"}"
+                    else
+                      output_line="{\"type\":\"tcp\",\"state\":\"$state_str\",\"local_ip\":\"$ip_dec\",\"local_port\":$port_dec}"
+                      fi
+                    else
+                      if [ "$SHOW_PROC" = true ]; then
+                        output_line=$(printf "%-12s  %-22s  %-12s  %s"  "$state_str"  "$ip_dec"  "$port_dec"  "$proc_name")
+                      else
+                        output_line=$(printf "%-12s  %-22s  %s"  "$state_str"  "$ip_dec"  "$port_dec")
+                      fi
+                    fi
+
+                    echo "$output_line"
 
                   # Appending to a file if requested by the user
                   if [ -n "$OUTPUT_FILE" ]; then
