@@ -109,9 +109,13 @@ if [ "$SOCKET_MODE" == "unix" ]; then
         if [ "$FIRST_LINE" = true ]; then
       FIRST_LINE=false; continue; fi
 
-      # Extract Columns Safely Using awk
+      # Extract Columns Safely Using "read"
 
-     read -r _ _ _ _ _ state inode path <<< "$line"
+     read -r -a cols <<< "$line"
+       state="${cols[5]}"
+       inode="${cols[6]}"
+       path="${cols[7]}"
+       
 
       # If path is empty, it is an unnamed socket
       if [ -z "$path" ]; then
@@ -174,7 +178,10 @@ if [ "$SOCKET_MODE" == "unix" ]; then
     FIRST_LINE=false; continue; fi
 
   # Read columns and turn into variables
- read -r _ local_address _ state _ _ _ _ _ inode _ <<< "$line"
+ read -r -a cols <<< "$line"
+   local_address="${cols[1]}"
+   state="${cols[3]}"
+   inode="${cols[9]}"
 
   # Parse State
   if [ "$state" == "0A" ]; then
