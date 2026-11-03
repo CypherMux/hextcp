@@ -111,10 +111,11 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
       # Extract Columns Safely Using "read"
 
-     read -r -a cols <<< "$line"
-       state="${cols[5]}"
-       inode="${cols[6]}"
-       path="${cols[7]}"
+     set -- $line
+
+       state="$6"
+       inode="$7"
+       path="$8"
        
 
       # If path is empty, it is an unnamed socket
@@ -178,10 +179,11 @@ if [ "$SOCKET_MODE" == "unix" ]; then
     FIRST_LINE=false; continue; fi
 
   # Read columns and turn into variables
- read -r -a cols <<< "$line"
-   local_address="${cols[1]}"
-   state="${cols[3]}"
-   inode="${cols[9]}"
+set -- $line
+
+local_address="$2"
+state="$4"
+inode="$10"
 
   # Parse State
   if [ "$state" == "0A" ]; then
