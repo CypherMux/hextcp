@@ -17,9 +17,11 @@ I built this tool because manually doing the hex-to-decimal math and reversing b
 
 ## Features In This Tool
 
-*  **~99% Native Bash:** No Python, Ruby, or external dependencies required *(minus a few caveats)*. This tool runs majorily on built-in Bash features such as parameter expansion and arithmetic expansion.
+*  **~99% Native Bash:** No Python, Ruby, or external dependencies required *(minus a few caveats)*. This tool runs majorily on built-in Bash features such as parameter expansion and arithmetic expansion. Utilizes standard POSIX utilities such as `awk` and `find` only for kernel-level process mapping.
 
 *  **Unix Socket Support:** It parses `/proc/net/unix` to enumerate local inter-process communication sockets. *(such as Docker, D-Bus, or systemd.)*
+
+*  **JSON Output:** Outputs data in JSON Lines format, perfect for piping into `jq`, SIEMs, or automated scripts.
 
 *  **IPv4 & IPv6 Support:** It can parse both `/proc/net/tcp` and `/proc/net/tcp6`.
 
@@ -93,6 +95,8 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 * `-u`: Parse the Unix socket table (`/proc/net/unix`) instead of TCP.
 
+* `-j`: Output results in JSON format. *(JSON Lines)*
+
 * `-h`: Display the help menu.
 
 ## Examples of Some Commands
@@ -135,6 +139,9 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 
 <img width="957" height="1072" alt="Screenshot From 2026-11-02 14-01-02" src="https://github.com/user-attachments/assets/3217e276-ad12-43dc-8e24-1bfa0d379cc4" />
+
+
+*  **Output JSON and filter with `jq` to find port 11434:**
 
 
 
