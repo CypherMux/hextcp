@@ -104,13 +104,14 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
               
       # Read /proc/net/unix
-      tail -n +2 "$TCP_FILE" | while read -r line; do
+      FIRST_LINE=true
+      while read -r line; do
+        if [ "$FIRST_LINE" = true ]; then
+      FIRST_LINE=false; continue; fi
 
       # Extract Columns Safely Using awk
 
-      state=$(echo "$line" | awk '{print $6}')
-      inode=$(echo "$line" | awk '{print $7}')
-      path=$(echo "$line" | awk '{print $8}')
+     read -r _ _ _ _ _ state inode path <<< "$line"
 
       # If path is empty, it is an unnamed socket
       if [ -z "$path" ]; then
@@ -123,16 +124,18 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
       # Use lsof to map the unix socket path to a PID
      pid=""
-     if [ -n "$path" ] && [ "$path" != "(unnamed)" ]; then
-       pid=$(lsof -U 2>/dev/null | grep "$path" | awk '{print $2}' | head -n 1)
-         else
-           pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
-             fi
+         for fd in /proc/[0-9]*/fd/*; do
+           if [ "$readlink "$fd" 2>/dev/null)" == "socket:\[$inode\]" ]; then
+             temp="${fd#/proc/}"
+             pid="${temp%%/*}"
+             break
+            fi
+          done
 
-             if [ -n "$pid" ]; then
-               p_name=$(cat /proc/$pid/comm 2>/dev/null)
-                 proc_name="$p_name $pid"
-                fi
+          if [ -n "$pid" ]; then
+            read -r p_name < "/proc/$pid/comm" 2>/dev/null
+            proc_name="$p_name ($pid)"
+            fi
 
       # Output Formatiing
       if [ "$SHOW_PROC" = true ]; then
@@ -148,7 +151,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
                   echo "$output_line" >> "$OUTPUT_FILE";
             fi
-        done < <(tail -n +2 "$TCP_FILE")
+        done < "$TCP_FILE"
 
         # Close the UNIX block
         fi
@@ -158,12 +161,13 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
     COUNT=0
 
-    tail -n +2 "$TCP_FILE" | while read -r line; do
+    FIRST_LINE=true
+    while read -r line; do
+      if [ "$FIRST_LINE" = true ]; then
+    FIRST_LINE=false; continue; fi
 
   # Read columns and turn into variables
-  local_address=$(echo "$line" | awk '{print $2}')
-  state=$(echo "$line" | awk '{print $4}')
-  inode=$(echo "$line" | awk '{print $10}')
+ read -r _ local_address _ state _ _ _ _ _ inode _ <<< "$line"
 
   # Parse State
   if [ "$state" == "0A" ]; then
@@ -207,10 +211,17 @@ if [ "$SOCKET_MODE" == "unix" ]; then
         # Process Mapping (or finding the PID via the Inode)
         proc_name=""
         if [ "$SHOW_PROC" = true ]; then
-          pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
+         pid=""
+                 for fd in /proc/[0-9]*/fd/*; do
+                   if [ "$(readlink "$fd" 2>/dev/null)" == "socket:\[$inode\]" ]; then
+                   temp="${fd#/proc/}"
+                   pid="${temp%%/*}"
+                   break
+                  fi
+                done
 
-            if [ -n "$pid" ]; then
-              p_name=$(cat /proc/$pid/comm 2>/dev/null)
+                  if [ -n "$pid" ]; then
+                    read -r p_name < "/proc/$pid/comm" 2>/dev/null
                 proc_name="$p_name $pid"
               else
                 proc_name="-"
@@ -238,14 +249,20 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                 
                   
                   
-                  done
+                  done < "$TCP_FILE"
 
                   # Final count calculations
 
           
 
                   if [ "$COUNT_ONLY" = true ]; then
-                    REAL_COUNT=$(tail -n +2 "$TCP_FILE" | wc --lines)
+                    REAL_COUNT=0
+                    FIRST_LINE=true
+                    while read -r line; do
+                      if [ "$FIRST_LINE" = true ]; then
+                    FIRST_LINE=false; continue; fi
+                      ((REAL_COUNT++))
+                    done < "$TCP_FILE"
                     echo "Total matching sockets:$REAL_COUNT"
                   else
                     if [ -n "$OUTPUT_FILE" ] ; then
