@@ -104,17 +104,13 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
               
       # Read /proc/net/unix
-      FIRST_LINE=true
-      while read -r line; do
-        if [ "$FIRST_LINE" = true ]; then
-      FIRST_LINE=false; continue; fi
+      tail -n +2 "$TCP_FILE" | while read -r line; do
 
-      # Extract Columns Safely Using "read"
-      read -r -a cols <<< "$line"
-      state="${cols[5]}"
-      inode="${cols[6]}"
-      path="${cols[7]}"
-       
+      # Extract Columns Safely Using awk
+
+      state=$(echo "$line" | awk '{print $6}')
+      inode=$(echo "$line" | awk '{print $7}')
+      path=$(echo "$line" | awk '{print $8}')
 
       # If path is empty, it is an unnamed socket
       if [ -z "$path" ]; then
@@ -124,28 +120,19 @@ if [ "$SOCKET_MODE" == "unix" ]; then
       
       # Process Mapping 
       proc_name="-"
-      if [ "$SHOW_PROC" == "true" ]; then
 
-      # Map the Unix Socket Path to a PID
+      # Use lsof to map the unix socket path to a PID
      pid=""
-     # Clean the Inode of any descriptors
-     clean_inode=$(echo "$inode" | tr -d '\r\n ')
+     if [ -n "$path" ] && [ "$path" != "(unnamed)" ]; then
+       pid=$(lsof -U 2>/dev/null | grep "$path" | awk '{print $2}' | head -n 1)
+         else
+           pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
+             fi
 
-     # Mapping Unix Socket Paht to a PID CONT...
-         for fd in /proc/[0-9]*/fd/*; do
-         target=$(readlink "$fd" 2>/dev/null)
-           if [ "$target" == "socket:\[$clean_inode\]" ]; then
-             temp="${fd#/proc/}"
-             pid="${temp%%/*}"
-             break
-            fi
-          done
-
-          if [ -n "$pid" ]; then
-            read -r p_name < "/proc/$pid/comm" 2>/dev/null
-            proc_name="$p_name ($pid)"
-            fi
-          fi
+             if [ -n "$pid" ]; then
+               p_name=$(cat /proc/$pid/comm 2>/dev/null)
+                 proc_name="$p_name $pid"
+                fi
 
       # Output Formatiing
       if [ "$SHOW_PROC" = true ]; then
@@ -161,7 +148,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
                   echo "$output_line" >> "$OUTPUT_FILE";
             fi
-        done < "$TCP_FILE"
+        done < <(tail -n +2 "$TCP_FILE")
 
         # Close the UNIX block
         fi
@@ -171,16 +158,12 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
     COUNT=0
 
-    FIRST_LINE=true
-    while read -r line; do
-      if [ "$FIRST_LINE" = true ]; then
-    FIRST_LINE=false; continue; fi
+    tail -n +2 "$TCP_FILE" | while read -r line; do
 
   # Read columns and turn into variables
-read -r -a cols <<< "$line"
-local_address="${cols[1]}"
-state="${cols[3]}"
-inode="${cols[9]}"
+  local_address=$(echo "$line" | awk '{print $2}')
+  state=$(echo "$line" | awk '{print $4}')
+  inode=$(echo "$line" | awk '{print $10}')
 
   # Parse State
   if [ "$state" == "0A" ]; then
@@ -223,24 +206,14 @@ inode="${cols[9]}"
 
         # Process Mapping (or finding the PID via the Inode)
         proc_name=""
-        if [ "$SHOW_PROC" == "true" ]; then
-         pid=""
+        if [ "$SHOW_PROC" = true ]; then
+          pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
 
-         # Clean the Inode removing any hidden characters
-         clean_inode=$(echo "$inode" | tr -d '\r\n ')
-         
-                 for fd in /proc/[0-9]*/fd/*; do
-                   target=$(readlink "$fd" 2>/dev/null)
-                   if [[ "$target" == *"socket:\[$clean_inode\]"* ]]; then
-                   temp="${fd#/proc/}"
-                   pid="${temp%%/*}"
-                   break
-                  fi
-                done
-
-                  if [ -n "$pid" ]; then
-                    read -r p_name < "/proc/$pid/comm" 2>/dev/null
-                proc_name="$p_name ($pid)"
+            if [ -n "$pid" ]; then
+              p_name=$(cat /proc/$pid/comm 2>/dev/null)
+                proc_name="$p_name $pid"
+              else
+                proc_name="-"
               fi
             fi
 
@@ -265,20 +238,14 @@ inode="${cols[9]}"
                 
                   
                   
-                  done < "$TCP_FILE"
+                  done
 
                   # Final count calculations
 
           
 
                   if [ "$COUNT_ONLY" = true ]; then
-                    REAL_COUNT=0
-                    FIRST_LINE=true
-                    while read -r line; do
-                      if [ "$FIRST_LINE" = true ]; then
-                    FIRST_LINE=false; continue; fi
-                      ((REAL_COUNT++))
-                    done < "$TCP_FILE"
+                    REAL_COUNT=$(tail -n +2 "$TCP_FILE" | wc --lines)
                     echo "Total matching sockets:$REAL_COUNT"
                   else
                     if [ -n "$OUTPUT_FILE" ] ; then
@@ -289,5 +256,4 @@ inode="${cols[9]}"
                 fi
                   
                   
-
                   
