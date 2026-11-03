@@ -5,7 +5,7 @@
 <span style="color:#0000AA">│</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">│</span><span style="color:#AAAAAA">  </span><span style="color:#0000AA">│</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">│</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">│</span><span style="color:#AAAAAA"> </span><span style="color:#55FFFF">└</span><span style="color:#5555FF">────</span><span style="color:#55FFFF">┐</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">│</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">┌┘</span><span style="color:#0000AA">└┐</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">└</span><span style="color:#FFFFFF">┐</span><span style="color:#AAAAAA">  </span><span style="color:#0000AA">│</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">│</span><span style="color:#AAAAAA">    </span><span style="color:#0000AA">│</span><span style="color:#AAAAAA"> </span><span style="color:#55FFFF">└</span><span style="color:#5555FF">────</span><span style="color:#55FFFF">┐</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">│</span><span style="color:#AAAAAA">  </span><span style="color:#5555FF">│</span><span style="color:#AAAAAA">     </span>
 <span style="color:#0000AA">┴─</span><span style="color:#FFFFFF">┴</span><span style="color:#5555FF">──</span><span style="color:#0000AA">┴─</span><span style="color:#FFFFFF">┴</span><span style="color:#5555FF">─</span><span style="color:#0000AA">┴──────</span><span style="color:#FFFFFF">┴</span><span style="color:#5555FF">─</span><span style="color:#0000AA">┴─</span><span style="color:#FFFFFF">┴</span><span style="color:#5555FF">──</span><span style="color:#0000AA">┴──</span><span style="color:#FFFFFF">┴</span><span style="color:#5555FF">──</span><span style="color:#0000AA">┘</span><span style="color:#AAAAAA"> </span><span style="color:#FFFFFF">└</span><span style="color:#5555FF">────</span><span style="color:#0000AA">┴──────</span><span style="color:#FFFFFF">┴</span><span style="color:#5555FF">─</span><span style="color:#0000AA">┴──</span><span style="color:#FFFFFF">┴</span><span style="color:#5555FF">─────</span></pre>
 
-A 100% native Bash script designed to parse `/proc/net/tcp` and decode Little-Endian hexadecimal IPs and ports into human readable format.
+A ~99% native Bash script designed to parse `/proc/net/tcp` and decode Little-Endian hexadecimal IPs and ports into human readable format.
 
 ## Why I Made This Tool
 
@@ -17,7 +17,7 @@ I built this tool because manually doing the hex-to-decimal math and reversing b
 
 ## Features In This Tool
 
-*  **100% Native Bash:** No Python, Ruby, or external dependencies required. This tool runs purely on built-in Bash features such as parameter expansion and arithmetic expansion.
+*  **100% Native Bash:** No Python, Ruby, or external dependencies required *(minus a few caveats)*. This tool runs majorily on built-in Bash features such as parameter expansion and arithmetic expansion.
 
 *  **Unix Socket Support:** It parses `/proc/net/unix` to enumerate local inter-process communication sockets. *(such as Docker, D-Bus, or systemd.)*
 
