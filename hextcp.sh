@@ -50,7 +50,9 @@ if [ ! -f "$TCP_FILE" ]; then
 fi
 
 # Loading Bar Functionality (Skip if -c is used)
-if [ "$COUNT_ONLY" = false ]; then
+if [ "$COUNT_ONLY" = false ] &&
+[ "$JSON_OUT" = false ]; then
+
   echo "hextcp - A tool by Stlwtrs"
   echo ""
   
