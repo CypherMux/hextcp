@@ -324,12 +324,19 @@ if [ "$SOCKET_MODE" == "unix" ]; then
             else
 
             # Continue Normal Table Output
-                      if [ "$SHOW_PROC" = true ]; then
-                        output_line=$(printf "%-12s  %-22s  %-12s  %s"  "$state_str"  "$ip_dec"  "$port_dec"  "$proc_name")
-                      else
-                        output_line=$(printf "%-12s  %-22s  %s"  "$state_str"  "$ip_dec"  "$port_dec")
-                      fi
-
+                      if [ "$RESOLVE_DNS" = true ]; then
+                        if [ "$SHOW_PROC" = true ]; then
+                          output_line=$(printf "%-12s  %-22s  %-20s  %-12s  %s"  "$state_str"  "$ip_dec"  "$rem_host"  "$port_dec"  "$proc_name")
+                            else
+                              output_line=$(printf "%-12s  %-22s  %-20s  %s"  "$state_str"  "$ip_dec"  "$rem_host"  "$port_dec")
+                            fi
+                          else
+                            if [ "$SHOW_PROC" = true ]; then
+                              output_line=$(printf "%-12s  %-22s  %s"  "$state_str"  "$ip_dec"  "$port_dec"  "$proc_name")
+                            else
+                              output_line=$(printf "%-12s  %-22s  %s"  "$state_str"  "$ip_dec"  "$port_dec")
+                            fi
+                          fi
                     # Highlight in RED if suspicious
                     if [ "$is_suspicious" = true ]; then
                       output_line="${RED}${output_line} [!] MALICIOUS IP${NC}"
