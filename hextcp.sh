@@ -281,17 +281,6 @@ if [ "$SOCKET_MODE" == "unix" ]; then
           fi
         fi
 
-          # Grab the remote address from the 3rd column
-          rem_address=$(echo "$line" | awk '{print $3}')
-          rem_ip_hex="${rem_address%:*}"
-
-          # Convert the remote hex to a decimal
-          rb1=$((16#${rem_ip_hex:6:2}))
-          rb2=$((16#${rem_ip_hex:4:2}))
-          rb3=$((16#${rem_ip_hex:2:2}))
-          rb4=$((16#${rem_ip_hex:0:2}))
-          rem_ip_dec="$rb1.$rb2.$rb3.$rb4"
-
           
           # Use grep to check the watchlist
           if grep -q "^$rem_ip_dec$" "$WATCHLIST_FILE" 2>/dev/null; then
