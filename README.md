@@ -175,6 +175,7 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 
 
+<img width="1135" height="860" alt="Screenshot From 2026-11-04 12-54-11" src="https://github.com/user-attachments/assets/4bbf0c5c-854a-4779-bf99-0deb30015fb4" />
 
 
 
