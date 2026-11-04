@@ -243,6 +243,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
           rb4=$((16#${rem_ip_hex:0:2}))
           rem_ip_dec="$rb1.$rb2.$rb3.$rb4"
 
+          
           # Use grep to check the watchlist
           if grep -q "^$rem_ip_dec$" "$WATCHLIST_FILE" 2>/dev/null; then
             is_suspicious=true
