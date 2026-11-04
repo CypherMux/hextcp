@@ -94,7 +94,7 @@ if [ "$SOCKET_MODE" == "tcp" ] &&
       if [ "$SHOW_PROC" = true ]; then
         printf "%-12s  %-22s  %-20s  %-12s  %s\n"  "STATE"  "LOCAL IP"  "REMOTE HOST"  "PORT"  "PROCESS"
       else
-        printf "%-12s  %-22s  %-20s  &s\n"  "STATE"  "LOCAL IP"  "REMOTE HOST"  "PORT"
+        printf "%-12s  %-22s  %-20s  %s\n"  "STATE"  "LOCAL IP"  "REMOTE HOST"  "PORT"
       fi
     else
       if [ "$SHOW_PROC" = true ]; then
