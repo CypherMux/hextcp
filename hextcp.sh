@@ -280,7 +280,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                 output_line="${output_line},\"warning\":\"Malicious Remote IP ($rem_ip_dec)\"}"
               else
                 output_line="${output_line}}"
-              fi
+            fi
             else
 
             # Continue Normal Table Output
@@ -303,7 +303,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                     echo "$output_line" >> "$OUTPUT_FILE"
                     fi
                   fi
-              fi
+              
 
                     # Write to a temporary file for counting
                   
