@@ -9,9 +9,11 @@ COUNT_ONLY=false
 SOCKET_MODE="tcp"
 JSON_OUT=false
 WATCHLIST_FILE=""
+CHECK_EVIL=false
 
 # Colors for the Watchlist
 RED='\033[0;31m'
+YELLOW='\033[0;33m'
 NC='\033[0m' # <--- No Color
 
 # Help menu functionality
@@ -27,12 +29,13 @@ show_help() {
   echo " -c           Count the number of matching sockets only"
   echo " -j           Output results in JSON format"
   echo " -w <file>    Check against a watchlist of malicious IPs"
+  echo " -e           Highlight processes from suspicious paths such as /tmp, /dev/shm, or deleted binaries"
   echo " -h           Show this help message"
     exit 0
     }
 
 # Parse command-line flags
-while getopts "o:6apcuhjw:" opt; do
+while getopts "o:6apcuhjw:e" opt; do
   case ${opt} in
   o ) OUTPUT_FILE=$OPTARG ;;
   6 ) TCP_FILE="/proc/net/tcp6" ;;
@@ -43,6 +46,7 @@ while getopts "o:6apcuhjw:" opt; do
   u ) SOCKET_MODE="unix" ;;
   j ) JSON_OUT=true ;;
   w ) WATCHLIST_FILE=$OPTARG ;;
+  e ) CHECK_EVIL=true ;;
   \? ) echo "Invalid Option." 1>&2; show_help ;;
   esac
 done
@@ -253,16 +257,28 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
         # Process Mapping (or finding the PID via the Inode)
         proc_name=""
+        is_evil_path=false
         if [ "$SHOW_PROC" = true ]; then
           pid=$(find /proc/*/fd -lname "socket:\[$inode\]" 2>/dev/null | head -n 1 | cut -d/ -f3)
 
             if [ -n "$pid" ]; then
               p_name=$(cat /proc/$pid/comm 2>/dev/null)
                 proc_name="$p_name $pid"
-              else
-                proc_name="-"
+                
+            # Evil Path Check
+            if [ "$CHECK_EVIL" = true ]; then
+              exe_path=$(readlink /proc/$pid/exe 2>/dev/null)
+                if [[ "$exe_path" == *"/tmp/"* || "$exe_path" == *"/dev/shm/"* || "$exe_path" == *"(deleted)"* ]]; then
+                  is_evil_path=true
+                fi
               fi
+
+            # End Evil Path Block
+
+            else
+              proc_name="-"
             fi
+          fi
 
             # Formatting and printing the output
             if [ "$COUNT_ONLY" = false ]; then
@@ -294,7 +310,14 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                     if [ "$is_suspicious" = true ]; then
                       output_line="${RED}${output_line} [!] MALICIOUS IP${NC}"
                     fi
+
+                    # Highlight in YELLOW if evil path
+                    if [ "$is_evil_path" = true ]; then
+                      output_line="${YELLOW}  ${output_line}  [!] SUSPICIOUS PATH${NC}"
+                    fi
                   fi
+
+                   
 
                   echo -e "$output_line"
 
