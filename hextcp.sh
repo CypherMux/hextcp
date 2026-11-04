@@ -150,8 +150,8 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                   output_line="{\"type\":\"unix\",\"state\":\"$state\",\"path\":\"$path\"}"
                 fi
               else
-                if [ "$SHOW_PROC" = true ];
-          then
+                if [ "$SHOW_PROC" = true ]; then
+         
                   output_line=$(printf "%-12s  %-22s  %s"  "$state"  "$proc_name"  "$path")
                     else
                       output_line=$(printf "%-12s  %s"  "$state"  "$path")
