@@ -261,6 +261,10 @@ if [ "$SOCKET_MODE" == "unix" ]; then
         # Watchlist Check
           is_suspicious=false
           if [ -n "$WATCHLIST_FILE" ] && [ -f "$WATCHLIST_FILE" ]; then
+            if grep -q "^$rem_ip_dec$"  "$WATCHLIST_FILE" 2>/dev/null; then
+              is_suspicious=true
+            fi
+          fi
 
           # Reverse DNS Resolution
           rem_host=""
