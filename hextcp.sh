@@ -283,19 +283,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
               rem_host="[no DNS]"
             fi
           fi
-        fi
-
-          
-          # Use grep to check the watchlist
-          if grep -q "^$rem_ip_dec$" "$WATCHLIST_FILE" 2>/dev/null; then
-            is_suspicious=true
-          fi
-        fi
-      fi
-
-  
-        
-         
+        fi  
 
         # Process Mapping (or finding the PID via the Inode)
         proc_name=""
