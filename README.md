@@ -13,7 +13,7 @@ During Linux privilege escalation, specifically in restricted shell environments
 
 When you are forced to read `/proc/net/tcp` manually, the output is a wall of raw kernel data. In fact, the local addresses are written in **Little-Endian Hexadecimal**. *(e.g., `0100007F:7B3B`)*
 
-I built this tool because manually doing the hex-to-decimal math and reversing byte orders during a CTF is tedious and prone to human error.
+I built this tool because manually doing the hex-to-decimal math and reversing byte orders during a CTF is tedious and prone to human error. `hextcp` is designed to be a fast, lightweight replacement for standard network enumeration tools and it also comes with a plethora of threat hunting capabilities built in.
 
 ## Features In This Tool
 
@@ -37,6 +37,8 @@ I built this tool because manually doing the hex-to-decimal math and reversing b
 
 *  **Evil Path Highlighter:** The tool will flag processes running from suspicious directories such as `/tmp`,`/dev/shm`, or other binaries that have been deleted from the disk. It will highlight the matches in **yellow**.
 
+*  **Reverse DNS:** The tool can resolve remote IP addresses to their hostnames *(e.g `github.com`)* for instant context during an investigation.
+
 ## How It Works & The Logic Behind It
 
 The tool uses pure Bash to translate the kernel's data:
@@ -58,6 +60,8 @@ The tool uses pure Bash to translate the kernel's data:
 *  **8. Threat Watchlist:** It parses the remote address hex from the TCP table, converts it into decimal format, and then uses native `grep` functionality to check if it exists in the user provided watchlist file.
 
 *  **9. Evil Path Highlighter:** Once a PID is found, it reads the symlink at `/proc/$pid/exe`. If the path contains `/tmp`,`/dev/shm`, or `(deleted)`, the tool will flag the process as a potential fileless malware or hidden backdoor on the system.
+
+*  **10. Reverse DNS:** Uses native `getent hosts` functionality to resolve the remote IP to a hostname, appending it to the output table as a result.
 
 ## Installation & Usage
 
@@ -110,6 +114,8 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 * `-w <file>`: This puts the tool into *Watchlist Mode*. The text file of malicious IPs given will allow the user to flag suspicious connections.
 
 * `-e`: This puts the tool into *Evil Path Mode*. It will flag processes running from `/tmp`,`/dev/shm`, or deleted binaries.
+
+* `-r`: Resolve remote IPs to hostnames.
 
 * `-h`: Display the help menu.
 
@@ -176,6 +182,10 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 
 <img width="1135" height="860" alt="Screenshot From 2026-11-04 12-54-11" src="https://github.com/user-attachments/assets/4bbf0c5c-854a-4779-bf99-0deb30015fb4" />
+
+*  **Investigate an unknown connection via *reverse DNS*:**
+
+```sudo hextcp -a -p -r```
 
 
 
