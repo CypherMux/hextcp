@@ -298,7 +298,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
             # Evil Path Check
             if [ "$CHECK_EVIL" = true ]; then
               exe_path=$(readlink /proc/$pid/exe 2>/dev/null)
-                if [[ "$exe_path" == *"/tmp/"* || "$exe_path" == *"/dev/shm/"* || "$exe_path" == *"(deleted)"* ]]; then
+                if [[ "$exe_path" =~ (/tmp/|/dev/shm/|\(deleted\)) ]]; then
                   is_evil_path=true
                 fi
               fi
