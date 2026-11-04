@@ -303,6 +303,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                     echo "$output_line" >> "$OUTPUT_FILE"
                     fi
                   fi
+              fi
 
                     # Write to a temporary file for counting
                   
