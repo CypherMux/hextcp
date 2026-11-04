@@ -1,20 +1,4 @@
----
-name: Bug Report Template
-about: Create a report to help us improve hextcp
-title: ''
-labels: ''
-assignees: ''
 
----
-
----
-name: Bug report
-about: Create a report to help us improve hextcp
-title: "[BUG] "
-labels: bug
-assignees: ' '
-
----
 
 **Describe the bug**
 A clear and concise description of what the bug is.
