@@ -290,6 +290,8 @@ if [ "$SOCKET_MODE" == "unix" ]; then
           if grep -q "^$rem_ip_dec$" "$WATCHLIST_FILE" 2>/dev/null; then
             is_suspicious=true
           fi
+
+  
         
          
 
