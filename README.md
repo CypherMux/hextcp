@@ -103,7 +103,7 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 * `-j`: Output results in JSON format. *(JSON Lines)*
 
-* `-w` <file>: This puts the tool into *Watchlist Mode*. The text file of malicious IPs given will allow the user to flag suspicious connections.
+* `-w <file>`: This puts the tool into *Watchlist Mode*. The text file of malicious IPs given will allow the user to flag suspicious connections.
 
 * `-h`: Display the help menu.
 
