@@ -17,7 +17,7 @@ I built this tool because manually doing the hex-to-decimal math and reversing b
 
 ## Features In This Tool
 
-*  **~99% Native Bash:** No Python, Ruby, or external dependencies required *(minus a few caveats)*. This tool runs majorily on built-in Bash features such as parameter expansion and arithmetic expansion. Utilizes standard POSIX utilities such as `awk` and `find` only for kernel-level process mapping.
+*  **~99% Native Bash:** No Python, Ruby, or external dependencies required *(minus a few caveats)*. This tool runs majorily on built-in Bash features such as parameter expansion and arithmetic expansion. It utilizes standard POSIX utilities such as `awk` and `find` only for kernel-level process mapping.
 
 *  **Unix Socket Support:** It parses `/proc/net/unix` to enumerate local inter-process communication sockets. *(such as Docker, D-Bus, or systemd.)*
 
