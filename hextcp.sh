@@ -164,6 +164,10 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                     echo "$output_line" >> "$OUTPUT_FILE"
                   fi
                 fi
+              done
+
+                  exit 0
+              fi
 
   # TCP LOOP (Only will run if not UNIX)
   if [ "$SOCKET_MODE" != "unix" ]; then
