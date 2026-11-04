@@ -248,7 +248,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
           while IFS= read -r bad_ip; do
 
           # Ignore empty lines or comments in the watchlist
-          if [[ -z "$bad_ip" || "$bad_ip" == \"#"* ]]; then continue; fi
+          if [[ -z "$bad_ip" || "$bad_ip" == "#"* ]]; then continue; fi
           if [ "$rem_ip_dec" == "$bad_ip" ]; then
             is_suspicious=true
             break
