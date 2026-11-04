@@ -244,10 +244,6 @@ if [ "$SOCKET_MODE" == "unix" ]; then
           rb4=$((16#${rem_ip_hex:0:2}))
           rem_ip_dec="$rb1.$rb2.$rb3.$rb4"
 
-          # Debugging fix for malicious port scanning
-          echo "DEBUG: Checking remote IP: $rem_ip_dec against $WATCHLIST_FILE" >&2
-            if grep -q "^$rem_ip_dec$"  "$WATCHLIST_FILE" 2>/dev/null; then
-
           # Use grep to check the watchlist
           if grep -q "^$rem_ip_dec$" "$WATCHLIST_FILE" 2>/dev/null; then
             is_suspicious=true
