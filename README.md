@@ -161,6 +161,10 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 ```sudo hextcp -a -p -w <file>```
 
 
+<img width="960" height="651" alt="Screenshot From 2026-11-04 12-23-15" src="https://github.com/user-attachments/assets/2a4a441b-7e78-4d8b-b98c-afdea2226f40" />
+
+
+
 
 
 ## Disclaimer
