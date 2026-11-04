@@ -10,6 +10,7 @@ SOCKET_MODE="tcp"
 JSON_OUT=false
 WATCHLIST_FILE=""
 CHECK_EVIL=false
+RESOLVE_DNS=false
 
 # Colors for the Watchlist
 RED='\033[0;31m'
@@ -30,12 +31,13 @@ show_help() {
   echo " -j           Output results in JSON format"
   echo " -w <file>    Check against a watchlist of malicious IPs"
   echo " -e           Highlight processes from suspicious paths such as /tmp, /dev/shm, or deleted binaries"
+  echo " -r           Resolve remote IPs to hostnames"
   echo " -h           Show this help message"
     exit 0
     }
 
 # Parse command-line flags
-while getopts "o:6apcuhjw:e" opt; do
+while getopts "o:6apcuhjw:er" opt; do
   case ${opt} in
   o ) OUTPUT_FILE=$OPTARG ;;
   6 ) TCP_FILE="/proc/net/tcp6" ;;
@@ -47,6 +49,7 @@ while getopts "o:6apcuhjw:e" opt; do
   j ) JSON_OUT=true ;;
   w ) WATCHLIST_FILE=$OPTARG ;;
   e ) CHECK_EVIL=true ;;
+  r ) RESOLVE_DNS=true ;;
   \? ) echo "Invalid Option." 1>&2; show_help ;;
   esac
 done
@@ -87,14 +90,24 @@ fi
   # ONLY PRINTS TCP HEADERS IF WE ARE NOT IN UNIX MODE
 if [ "$SOCKET_MODE" == "tcp" ] &&
   [ "$JSON_OUT" = false ]; then
-  if [ "$SHOW_PROC" = true ]; then
-    printf "%-12s  %-22s  %-12s %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT" "PROCESS"
-    echo "------------------------------------------------------------"
+    if [ "$RESOLVE_DNS" = true ]; then
+      if [ "$SHOW_PROC" = true ]; then
+        printf "%-12s  %-22s  %-20s  %-12s  %s\n"  "STATE"  "LOCAL IP"  "REMOTE HOST"  "PORT"  "PROCESS"
+      else
+        printf "%-12s  %-22s  %-20s  &s\n"  "STATE"  "LOCAL IP"  "REMOTE HOST"  "PORT"
+      fi
     else
-      printf  "%-12s  %-22s  %s\n" "STATE"  "LOCAL IP"  "LOCAL PORT"
-      echo "------------------------------------------------------------"
+      if [ "$SHOW_PROC" = true ]; then
+        printf "%-12s  %-22s  %-12s  %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT"  "PROCESS"
+        echo "-------------------------------------------------------------------------"
+      else
+        printf "%-12s  %-22s  %s\n"  "STATE"  "LOCAL IP"  "LOCAL PORT"
+        echo "-------------------------------------------------------------------------"
+      fi
     fi
   fi
+    
+     
 
   # Clearing the output if specified
   if [ -n "$OUTPUT_FILE" ]; then
@@ -235,6 +248,17 @@ if [ "$SOCKET_MODE" == "unix" ]; then
         # Watchlist Check
           is_suspicious=false
           if [ -n "$WATCHLIST_FILE" ] && [ -f "$WATCHLIST_FILE" ]; then
+
+          # Reverse DNS Resolution
+          rem_host=""
+          if [ "$RESOLVE_DNS" = true ] && [ "$rem_ip_dec" != "0.0.0.0" ]; then
+
+          # Use getent to resolve the host
+          rem_host=$(getent hosts "$rem_ip_dec" | awk '{print $2}' | head -n 1)
+            if [ -z "$rem_host" ]; then
+              rem_host="[no DNS]"
+            fi
+          fi
 
           # Grab the remote address from the 3rd column
           rem_address=$(echo "$line" | awk '{print $3}')
