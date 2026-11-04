@@ -251,7 +251,14 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
           # Reverse DNS Resolution
           rem_host=""
-          if [ "$RESOLVE_DNS" = true ] && [ "$rem_ip_dec" != "0.0.0.0" ]; then
+          if [ "$RESOLVE_DNS" = true ]; then
+
+          # Check if it is a local or VPN IP
+          if [[ "$rem_ip_dec" == 10.* || "$rem_ip_dec" == 192.168.* || "$rem_ip_dec" == 127.* ]]; then
+            rem_host="[local/VPN]"
+          elif [ "$rem_ip_dec" == "0.0.0.0" ]; then
+            rem_host="[listening]"
+          else
 
           # Use getent to resolve the host
           rem_host=$(getent hosts "$rem_ip_dec" | awk '{print $2}' | head -n 1)
@@ -259,6 +266,7 @@ if [ "$SOCKET_MODE" == "unix" ]; then
               rem_host="[no DNS]"
             fi
           fi
+        fi
 
           # Grab the remote address from the 3rd column
           rem_address=$(echo "$line" | awk '{print $3}')
