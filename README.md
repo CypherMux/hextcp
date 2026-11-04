@@ -27,6 +27,8 @@ I built this tool because manually doing the hex-to-decimal math and reversing b
 
 *  **Process Mapping:** Cross references socket inodes with `/proc/` to find the exact running process name and PID running the socket. *(Requires `sudo`)*
 
+*  **Threat Watchlist:** The tool can cross reference active connections against a local text file of malicious IPs. It flags matches **red** or adds a JSON warning for instant incident response triage.
+
 *  **Heuristic Parsing:** The tool automatically filters for `0A` (LISTEN) and `01` (ESTABLISHED) states, and outright ignores dead connections in order to clean up the output and only show the important info.
 
 *  **Visual Feedback:** It includes a custom terminal loading bar using `tput` and `printf` functionality.
@@ -50,6 +52,8 @@ The tool uses pure Bash to translate the kernel's data:
 *  **6. IPv6 Conversion:** It chunks the 32-character hex string into 4-byte blocks,reverses the byte order, and formats it with colons.
 
 *  **7. Process Mapping (`-p`):** It takes the socket's Inode number and uses the command `find /proc/*/fd -lname "socket:\[$inode\]"` to locate which process file descriptor is holding that specified socket.
+
+*  **8. Threat Watchlist:** It parses the remote address hex from the TCP table, converts it into decimal format, and then uses native `grep` functionality to check if it exists in the user provided watchlist file.
 
 ## Installation & Usage
 
@@ -98,6 +102,8 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 * `-u`: Parse the Unix socket table (`/proc/net/unix`) instead of TCP.
 
 * `-j`: Output results in JSON format. *(JSON Lines)*
+
+* `-w` <file>: This puts the tool into *Watchlist Mode*. The text file of malicious IPs given will allow the user to flag suspicious connections.
 
 * `-h`: Display the help menu.
 
@@ -149,6 +155,10 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 
 <img width="965" height="442" alt="Screenshot From 2026-11-03 19-20-29" src="https://github.com/user-attachments/assets/060f5ff3-e99f-4eb2-ac3b-e00c6c9cc84c" />
+
+*  **Scan for connections to known malicious IPs *(Watchlist Mode*):
+
+```sudo hextcp -a -p -w <file>```
 
 
 
