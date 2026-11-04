@@ -244,17 +244,12 @@ if [ "$SOCKET_MODE" == "unix" ]; then
           rb4=$((16#${rem_ip_hex:0:2}))
           rem_ip_dec="$rb1.$rb2.$rb3.$rb4"
 
-          # Read the file line by line using native bash utilities
-          while IFS= read -r bad_ip; do
-
-          # Ignore empty lines or comments in the watchlist
-          if [[ -z "$bad_ip" || "$bad_ip" == "#"* ]]; then continue; fi
-          if [ "$rem_ip_dec" == "$bad_ip" ]; then
+          # Use grep to check the watchlist
+          if grep -q "^$rem_ip_dec$" "$WATCHLIST_FILE" 2>/dev/null; then
             is_suspicious=true
-            break
           fi
-        done < "$WATCHLIST_FILE"
-      fi
+        fi
+         
 
         # Process Mapping (or finding the PID via the Inode)
         proc_name=""
