@@ -32,7 +32,7 @@ show_help() {
     }
 
 # Parse command-line flags
-while getopts "o:6apcuhjw" opt; do
+while getopts "o:6apcuhjw:" opt; do
   case ${opt} in
   o ) OUTPUT_FILE=$OPTARG ;;
   6 ) TCP_FILE="/proc/net/tcp6" ;;
