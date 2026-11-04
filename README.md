@@ -45,9 +45,11 @@ The tool uses pure Bash to translate the kernel's data:
 
 *  **4. Unix Socket Parsing:** It reads `/proc/net/unix`. It then extracts the state, inode, and path using the `awk` command. If the path is presenting as empty, it will label it as `(unnamed)`.
 
-*  **5. IPv6 Conversion:** It chunks the 32-character hex string into 4-byte blocks,reverses the byte order, and formats it with colons.
+*  **5. JSON Formatting:** Uses a native Bash `if` statement to check the `$JSON_OUT` variable. If true, it wraps the parsed variables into a JSON string *(e,g `{"type":"tcp","state":"..."}`)*. This is perfect for piping the script into `jq` or automating alerts in a SIEM for example.
 
-*  **6. Process Mapping (`-p`):** It takes the socket's Inode number and uses the command `find /proc/*/fd -lname "socket:\[$inode\]"` to locate which process file descriptor is holding that specified socket.
+*  **6. IPv6 Conversion:** It chunks the 32-character hex string into 4-byte blocks,reverses the byte order, and formats it with colons.
+
+*  **7. Process Mapping (`-p`):** It takes the socket's Inode number and uses the command `find /proc/*/fd -lname "socket:\[$inode\]"` to locate which process file descriptor is holding that specified socket.
 
 ## Installation & Usage
 
