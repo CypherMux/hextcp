@@ -8,6 +8,11 @@ SHOW_PROC=false
 COUNT_ONLY=false
 SOCKET_MODE="tcp"
 JSON_OUT=false
+WATCHLIST_FILE=""
+
+# Colors for the Watchlist
+RED='\033[0;31m'
+NC='\033[0m' # <--- No Color
 
 # Help menu functionality
 show_help() {
@@ -21,12 +26,13 @@ show_help() {
   echo " -p           Show Process/PID (requires root/sudo for all processes)"
   echo " -c           Count the number of matching sockets only"
   echo " -j           Output results in JSON format"
+  echo " -w <file>    Check against a watchlist of malicious IPs"
   echo " -h           Show this help message"
     exit 0
     }
 
 # Parse command-line flags
-while getopts "o:6apcuhj" opt; do
+while getopts "o:6apcuhjw" opt; do
   case ${opt} in
   o ) OUTPUT_FILE=$OPTARG ;;
   6 ) TCP_FILE="/proc/net/tcp6" ;;
@@ -36,6 +42,7 @@ while getopts "o:6apcuhj" opt; do
   h ) show_help ;;
   u ) SOCKET_MODE="unix" ;;
   j ) JSON_OUT=true ;;
+  w ) WATCHLIST_FILE=$OPTARG ;;
   \? ) echo "Invalid Option." 1>&2; show_help ;;
   esac
 done
@@ -222,6 +229,33 @@ if [ "$SOCKET_MODE" == "unix" ]; then
           ip_dec="${ip_dec%:}"
         fi
 
+        # Watchlist Check
+          is_suspicious=false
+          if [ -n "$WATCHLIST_FILE" ] && [ -f "$WATCHLIST_FILE" ]; then
+
+          # Grab the remote address from the 3rd column
+          rem_address=$(echo "$line" | awk '{print $3}')
+          rem_ip_hex="${rem_address%:*}"
+
+          # Convert the remote hex to a decimal
+          rb1=$((16#${rem_ip_hex:6:2}))
+          rb2=$((16#${rem_ip_hex:4:2}))
+          rb3=$((16#${rem_ip_hex:2:2}))
+          rb4=$((16#${rem_ip_hex:0:2}))
+          rem_ip_dec="$rb1.$rb2.$rb3.$rb4"
+
+          # Read the file line by line using native bash utilities
+          while IFS= read -r bad_ip; do
+
+          # Ignore empty lines or comments in the watchlist
+          if [[ -z "$bad_ip" || "$bad_ip" == \#*; then continue; fi
+          if [ "$rem_ip_dec" == "$bad_ip" ]; then
+            is_suspicious=true
+            break
+          fi
+        done < "$WATCHLIST_FILE"
+      fi
+
         # Process Mapping (or finding the PID via the Inode)
         proc_name=""
         if [ "$SHOW_PROC" = true ]; then
@@ -245,15 +279,29 @@ if [ "$SOCKET_MODE" == "unix" ]; then
                     else
                       output_line="{\"type\":\"tcp\",\"state\":\"$state_str\",\"local_ip\":\"$ip_dec\",\"local_port\":$port_dec}"
                       fi
-                    else
+
+              # Warning for suspicious traffic
+              if [ "$is_suspicious" = true ]; then
+                output_line="${output_line},\"warning\":\"Malicious Remote IP ($rem_ip_dec)\"}"
+              else
+                output_line="${output_line}}"
+              fi
+            else
+
+            # Continue Normal Table Output
                       if [ "$SHOW_PROC" = true ]; then
                         output_line=$(printf "%-12s  %-22s  %-12s  %s"  "$state_str"  "$ip_dec"  "$port_dec"  "$proc_name")
                       else
                         output_line=$(printf "%-12s  %-22s  %s"  "$state_str"  "$ip_dec"  "$port_dec")
                       fi
-                    fi
 
-                    echo "$output_line"
+                    # Highlight in RED if suspicious
+                    if [ "$is_suspicious" = true ]; then
+                      output_line="${RED}${output_line} [!] MALICIOUS IP${NC}"
+                    fi
+                  fi
+
+                  echo -e "$output_line"
 
                   # Appending to a file if requested by the user
                   if [ -n "$OUTPUT_FILE" ]; then
