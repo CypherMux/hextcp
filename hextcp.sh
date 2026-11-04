@@ -150,10 +150,9 @@ if [ "$SOCKET_MODE" == "unix" ]; then
 
       # Output Formatiing
       if [ "$COUNT_ONLY" = false ]; then
-        if [ "$JSON_OUT" == "true" ];
-      then
-            if [ "$SHOW_PROC" == "true" ];
-      then
+        if [ "$JSON_OUT" == "true" ]; then
+            if [ "$SHOW_PROC" == "true" ]; then
+      
               output_line="{\"type\":\"unix\",\"state\":\"$state\",\"process\":\"$proc_name\":,\"path\":\"$path\"}"
                 else
                   output_line="{\"type\":\"unix\",\"state\":\"$state\",\"path\":\"$path\"}"
