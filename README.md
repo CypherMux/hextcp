@@ -35,6 +35,8 @@ I built this tool because manually doing the hex-to-decimal math and reversing b
 
 *  **File Output:** You can save your results directly to a file of your choice using the `-o` flag.
 
+*  **Evil Path Highlighter:** The tool will flag processes running from suspicious directories such as `/tmp`,`/dev/shm`, or other binaries that have been deleted from the disk. It will highlight the matches in **yellow**.
+
 ## How It Works & The Logic Behind It
 
 The tool uses pure Bash to translate the kernel's data:
@@ -54,6 +56,8 @@ The tool uses pure Bash to translate the kernel's data:
 *  **7. Process Mapping (`-p`):** It takes the socket's Inode number and uses the command `find /proc/*/fd -lname "socket:\[$inode\]"` to locate which process file descriptor is holding that specified socket.
 
 *  **8. Threat Watchlist:** It parses the remote address hex from the TCP table, converts it into decimal format, and then uses native `grep` functionality to check if it exists in the user provided watchlist file.
+
+*  **9. Evil Path Highlighter:** Once a PID is found, it reads the symlink at `/proc/$pid/exe`. If the path contains `/tmp`,`/dev/shm`, or `(deleted)`, the tool will flag the process as a potential fileless malware or hidden backdoor on the system.
 
 ## Installation & Usage
 
@@ -104,6 +108,8 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 * `-j`: Output results in JSON format. *(JSON Lines)*
 
 * `-w <file>`: This puts the tool into *Watchlist Mode*. The text file of malicious IPs given will allow the user to flag suspicious connections.
+
+* `-e`: This puts the tool into *Evil Path Mode*. It will flag processes running from `/tmp`,`/dev/shm`, or deleted binaries.
 
 * `-h`: Display the help menu.
 
@@ -162,6 +168,15 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 
 <img width="960" height="651" alt="Screenshot From 2026-11-04 12-23-15" src="https://github.com/user-attachments/assets/2a4a441b-7e78-4d8b-b98c-afdea2226f40" />
+
+*  **Hunt for suspicious malware paths such as *fileless malware* or *backdoors*.**
+
+```sudo hextcp -a -p -e```
+
+
+
+
+
 
 
 
