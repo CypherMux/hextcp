@@ -156,7 +156,7 @@ If you want to run `hextcp` from any directory without using `./`, you can insta
 
 <img width="965" height="442" alt="Screenshot From 2026-11-03 19-20-29" src="https://github.com/user-attachments/assets/060f5ff3-e99f-4eb2-ac3b-e00c6c9cc84c" />
 
-*  **Scan for connections to known malicious IPs *(Watchlist Mode*):
+*  **Scan for connections to known malicious IPs *(Watchlist Mode*):**
 
 ```sudo hextcp -a -p -w <file>```
 
